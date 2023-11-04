@@ -1,0 +1,25 @@
+export enum EntityGender {
+  male = "male",
+  female = "female",
+  both = "both",
+}
+
+export interface Measurement {
+  id: number
+  measured_at: Date
+  value: number
+  code: string
+  title: string
+  warning: string
+  max: number
+  min: number
+  unit: string
+  description: string
+  gender: EntityGender
+}
+
+export interface Entity {
+  id: number
+  code: string
+  title: string
+}
