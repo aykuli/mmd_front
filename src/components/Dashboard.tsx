@@ -1,20 +1,57 @@
 import { useEffect, useState } from "react"
-import { Button, Container, Typography } from "@mui/material"
+import axios from "axios"
+import { Link, ListItemIcon, List, ListItem } from "@mui/material"
+import { ArrowCircleRight } from "@mui/icons-material"
+import { Entity } from "../types"
 
-import ViewSelect from "./ViewSelect"
-import Table from "./Table"
-import Chart from "./Chart"
+interface DashboardProps {
+  onEntityClick: (page: string) => void
+}
 
-const Dashboard = () => {
-  const [view, setView] = useState("table")
+const Dashboard = ({ onEntityClick }: DashboardProps) => {
+  const [eList, setEList] = useState<Entity[]>([])
+  const [isRequestOngoing, setIsRequestOngoing] = useState(false)
+
+  const getEntities = async () => {
+    setIsRequestOngoing(true)
+    try {
+      const res = await axios.post(
+        `${String(process.env.REACT_APP_DOMAIN)}/api/v1/entities/list`
+      )
+      setEList(res.data.entities)
+    } catch (e) {
+      console.error(e)
+    } finally {
+      setIsRequestOngoing(false)
+    }
+  }
 
   useEffect(() => {
-    // fetch entities
+    getEntities()
   }, [])
 
   return (
     <div>
+      {isRequestOngoing && "Request is ongoing..."}
       <p>Посмотреть:</p>
+      <List>
+        {eList.map(({ id, code, title }) => {
+          return (
+            <ListItem id={code}>
+              <ListItemIcon>
+                <ArrowCircleRight />
+              </ListItemIcon>
+              <Link
+                href="#"
+                underline="hover"
+                onClick={() => onEntityClick(code)}
+              >
+                {title}
+              </Link>
+            </ListItem>
+          )
+        })}
+      </List>
     </div>
   )
 }
