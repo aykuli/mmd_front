@@ -1,26 +1,34 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Button, Container, Typography } from "@mui/material"
+
+import "./assets/App.css"
+import { useState } from "react"
+import Dashboard from "./components/Dashboard"
 
 function App() {
+  const [page, setPage] = useState("/")
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <Typography align="left" variant="h2" className="title">
+          Monitor your blood state
+        </Typography>
       </header>
+      <Container maxWidth="sm" className="container">
+        <Button
+          variant="outlined"
+          onClick={() => {
+            console.log(page)
+            setPage("dashboard")
+          }}
+        >
+          Показать варианты
+        </Button>
+
+        {page === "dashboard" && <Dashboard />}
+      </Container>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
