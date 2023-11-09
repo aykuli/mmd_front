@@ -23,3 +23,9 @@ export interface Entity {
   code: string
   title: string
 }
+
+export interface FamilyMember {
+  id: number
+  first_name: string
+  member: string
+}
