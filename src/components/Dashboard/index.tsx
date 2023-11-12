@@ -16,6 +16,7 @@ interface FamilyResponse {
 }
 
 type LastMeasurementsType = { [id: number]: LastDate[] }
+type WarningMeasurementsType = { [id: number]: LastDate[] }
 
 interface LastDate {
   id: number
@@ -24,6 +25,8 @@ interface LastDate {
 
 const Dashboard = ({ onEntityClick }: DashboardProps) => {
   const [lastMeasurements, setLastMeasurements] =
+    useState<LastMeasurementsType | null>(null)
+  const [warningMeasurements, setWarningMeasurements] =
     useState<LastMeasurementsType | null>(null)
   const [isMeasuresLoading, setIsMeasuresLoading] = useState<boolean>(false)
   const [family, setFamily] = useState<FamilyMember[]>([])
@@ -40,8 +43,8 @@ const Dashboard = ({ onEntityClick }: DashboardProps) => {
       setFamily(users)
 
       users.forEach(({ id, first_name }) => {
-        console.log("featching measurements for user:", id, "  -- ", first_name)
         fetchLastMeasurements(id)
+        fetchWarningMeasurements(id)
       })
     } catch (e) {
       console.error(e)
@@ -58,6 +61,24 @@ const Dashboard = ({ onEntityClick }: DashboardProps) => {
         { user_id }
       )
       setLastMeasurements((prev) => {
+        const prevState = prev || {}
+        return { [user_id]: res.data.dates, ...prevState }
+      })
+    } catch (e) {
+      console.error(e)
+    } finally {
+      setIsMeasuresLoading(false)
+    }
+  }
+
+  const fetchWarningMeasurements = async (user_id: number) => {
+    setIsMeasuresLoading(true)
+    try {
+      const res: AxiosResponse<{ dates: LastDate[] }> = await axios().post(
+        `${String(process.env.REACT_APP_DOMAIN)}/api/v1/measurements/warnings`,
+        { user_id }
+      )
+      setWarnings((prev) => {
         const prevState = prev || {}
         return { [user_id]: res.data.dates, ...prevState }
       })
