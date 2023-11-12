@@ -13,7 +13,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <Typography align="left" variant="h2" className="title">
-          Monitor your blood state
+          Monitor your state
         </Typography>
       </header>
       <Container maxWidth="sm" className="container">

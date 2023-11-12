@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react"
-import axios, { AxiosResponse } from "axios"
+import { AxiosResponse } from "axios"
 import { Link, ListItemIcon, List, ListItem, Typography } from "@mui/material"
 import { ArrowCircleRight } from "@mui/icons-material"
-import { Entity, FamilyMember } from "../../types"
-import { Accordion, AccordionDetails, AccordionSummary } from "./components"
+import { Measurement, FamilyMember } from "../../types"
+import { Accordion, AccordionDetails, AccordionSummary } from "./Accordions"
+import LastMeasurements from "./LastMeasurements"
+import axios from "../../services/api"
 
 interface DashboardProps {
   onEntityClick: (page: string) => void
@@ -13,38 +15,68 @@ interface FamilyResponse {
   users: FamilyMember[]
 }
 
+type LastMeasurementsType = { [id: number]: LastDate[] }
+
+interface LastDate {
+  id: number
+  measured_at: Date
+}
+
 const Dashboard = ({ onEntityClick }: DashboardProps) => {
-  const [eList, setEList] = useState<Entity[]>([])
-  const [isRequestOngoing, setIsRequestOngoing] = useState(false)
-  const [family, setfamily] = useState<FamilyMember[]>([])
+  const [lastMeasurements, setLastMeasurements] =
+    useState<LastMeasurementsType | null>(null)
+  const [isMeasuresLoading, setIsMeasuresLoading] = useState<boolean>(false)
+  const [family, setFamily] = useState<FamilyMember[]>([])
+  const [isFamilyLoading, setIsFamilyLoading] = useState<boolean>(false)
   const [expanded, setExpanded] = useState<number | null>(0)
 
-  const getEntities = async () => {
-    setIsRequestOngoing(true)
+  const fetchFamily = async () => {
+    setIsFamilyLoading(true)
     try {
-      const res = await axios.post(
-        `${String(process.env.REACT_APP_DOMAIN)}/api/v1/entities/list`
-      )
-      setEList(res.data.entities)
-
-      const familyData: AxiosResponse<FamilyResponse> = await axios.get(
+      const familyData: AxiosResponse<FamilyResponse> = await axios().get(
         `${String(process.env.REACT_APP_DOMAIN)}/api/v1/family`
       )
-      setfamily(familyData.data.users)
+      const users = familyData.data.users
+      setFamily(users)
+
+      users.forEach(({ id, first_name }) => {
+        console.log("featching measurements for user:", id, "  -- ", first_name)
+        fetchLastMeasurements(id)
+      })
     } catch (e) {
       console.error(e)
     } finally {
-      setIsRequestOngoing(false)
+      setIsFamilyLoading(false)
+    }
+  }
+
+  const fetchLastMeasurements = async (user_id: number) => {
+    setIsMeasuresLoading(true)
+    try {
+      const res: AxiosResponse<{ dates: LastDate[] }> = await axios().post(
+        `${String(process.env.REACT_APP_DOMAIN)}/api/v1/measurements/dates`,
+        { user_id }
+      )
+      setLastMeasurements((prev) => {
+        const prevState = prev || {}
+        return { [user_id]: res.data.dates, ...prevState }
+      })
+    } catch (e) {
+      console.error(e)
+    } finally {
+      setIsMeasuresLoading(false)
     }
   }
 
   useEffect(() => {
-    getEntities()
+    fetchFamily()
   }, [])
+
+  console.log(lastMeasurements)
 
   return (
     <div>
-      {isRequestOngoing && "Request is ongoing..."}
+      {isFamilyLoading && "Request is ongoing..."}
       {family.map(({ id, first_name, member }, index) => {
         return (
           <Accordion
@@ -57,37 +89,15 @@ const Dashboard = ({ onEntityClick }: DashboardProps) => {
               } ${first_name}`}</Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <Typography>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
-                eget. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
-                eget.
-              </Typography>
+              <p>{isMeasuresLoading ? "Loading data" : ""} </p>
+
+              {lastMeasurements && lastMeasurements[id] ? (
+                <LastMeasurements data={lastMeasurements[id]} />
+              ) : null}
             </AccordionDetails>
           </Accordion>
         )
       })}
-
-      <p>Посмотреть:</p>
-      <List>
-        {eList.map(({ id, code, title }) => {
-          return (
-            <ListItem id={code}>
-              <ListItemIcon>
-                <ArrowCircleRight />
-              </ListItemIcon>
-              <Link
-                href="#"
-                underline="hover"
-                onClick={() => onEntityClick(code)}
-              >
-                {title}
-              </Link>
-            </ListItem>
-          )
-        })}
-      </List>
     </div>
   )
 }
