@@ -1,6 +1,6 @@
 import { Link, List, ListItem, Typography } from "@mui/material"
 
-interface LastDate {
+export interface LastDate {
   id: number
   measured_at: Date
 }

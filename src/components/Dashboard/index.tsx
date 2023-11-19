@@ -4,8 +4,9 @@ import { Link, ListItemIcon, List, ListItem, Typography } from "@mui/material"
 import { ArrowCircleRight } from "@mui/icons-material"
 import { Measurement, FamilyMember } from "../../types"
 import { Accordion, AccordionDetails, AccordionSummary } from "./Accordions"
-import LastMeasurements from "./LastMeasurements"
+import LastMeasurements, { LastDate } from "./LastMeasurements"
 import axios from "../../services/api"
+import PayAttention, { Warning } from "./PayAttention"
 
 interface DashboardProps {
   onEntityClick: (page: string) => void
@@ -16,18 +17,13 @@ interface FamilyResponse {
 }
 
 type LastMeasurementsType = { [id: number]: LastDate[] }
-type WarningMeasurementsType = { [id: number]: LastDate[] }
-
-interface LastDate {
-  id: number
-  measured_at: Date
-}
+type WarningMeasurementsType = { [id: number]: Warning[] }
 
 const Dashboard = ({ onEntityClick }: DashboardProps) => {
   const [lastMeasurements, setLastMeasurements] =
     useState<LastMeasurementsType | null>(null)
   const [warningMeasurements, setWarningMeasurements] =
-    useState<LastMeasurementsType | null>(null)
+    useState<WarningMeasurementsType | null>(null)
   const [isMeasuresLoading, setIsMeasuresLoading] = useState<boolean>(false)
   const [family, setFamily] = useState<FamilyMember[]>([])
   const [isFamilyLoading, setIsFamilyLoading] = useState<boolean>(false)
@@ -74,13 +70,13 @@ const Dashboard = ({ onEntityClick }: DashboardProps) => {
   const fetchWarningMeasurements = async (user_id: number) => {
     setIsMeasuresLoading(true)
     try {
-      const res: AxiosResponse<{ dates: LastDate[] }> = await axios().post(
+      const res: AxiosResponse<{ warnings: Warning[] }> = await axios().post(
         `${String(process.env.REACT_APP_DOMAIN)}/api/v1/measurements/warnings`,
         { user_id }
       )
-      setWarnings((prev) => {
+      setWarningMeasurements((prev: WarningMeasurementsType | null) => {
         const prevState = prev || {}
-        return { [user_id]: res.data.dates, ...prevState }
+        return { [user_id]: res.data.warnings, ...prevState }
       })
     } catch (e) {
       console.error(e)
@@ -92,8 +88,6 @@ const Dashboard = ({ onEntityClick }: DashboardProps) => {
   useEffect(() => {
     fetchFamily()
   }, [])
-
-  console.log(lastMeasurements)
 
   return (
     <div>
@@ -114,6 +108,10 @@ const Dashboard = ({ onEntityClick }: DashboardProps) => {
 
               {lastMeasurements && lastMeasurements[id] ? (
                 <LastMeasurements data={lastMeasurements[id]} />
+              ) : null}
+
+              {warningMeasurements && warningMeasurements[id] ? (
+                <PayAttention data={warningMeasurements[id]} />
               ) : null}
             </AccordionDetails>
           </Accordion>

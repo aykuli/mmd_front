@@ -1,21 +1,22 @@
 import { Link, List, ListItem, Typography } from "@mui/material"
 
-interface LastDate {
+export interface Warning {
   id: number
-  measured_at: Date
+  entity_title: String
+  warning: String
 }
 
-const PayAttention = ({ data }: { data: LastDate[] }) => {
+const PayAttention = ({ data }: { data: Warning[] }) => {
   return (
     <>
-      <Typography align="left">Последние измерения:</Typography>
+      <Typography align="left">Обратите внимание:</Typography>
       <List dense>
         {data
-          ? data.map(({ id, measured_at }) => {
+          ? data.map(({ id, entity_title, warning }) => {
               return (
                 <ListItem key={id}>
                   <Link href="#" underline="hover">
-                    {String(measured_at)}
+                    {String(entity_title)}
                   </Link>
                 </ListItem>
               )
