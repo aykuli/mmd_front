@@ -1,11 +1,6 @@
 import React from "react"
 import ReactDOM from "react-dom/client"
-import {
-  createBrowserRouter,
-  createRoutesFromElements,
-  Route,
-  RouterProvider,
-} from "react-router-dom"
+import { createBrowserRouter, RouterProvider } from "react-router-dom"
 
 import App from "./App"
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration"
@@ -13,18 +8,31 @@ import reportWebVitals from "./reportWebVitals"
 import "./assets/index.css"
 import Dashboard from "./components/Dashboard"
 import Chart from "./components/Chart"
+import MeasurementsByDate from "./components/MeasurementsByDate"
 
-const router = createBrowserRouter(
-  createRoutesFromElements(
-    <Route path="/" element={<App />}>
-      <Route path="dashboard" element={<Dashboard />} />
-      <Route
-        path="/measurements/:code"
-        element={<Chart entity={"hemoglobin"} />}
-      />
-    </Route>
-  )
-)
+const router = createBrowserRouter([
+  {
+    path: "/",
+    index: true,
+    element: <App />,
+    errorElement: <App />,
+  },
+  {
+    path: "/dashboard",
+    element: <Dashboard />,
+    errorElement: <App />,
+  },
+  {
+    path: "measured_at/:date",
+    element: <MeasurementsByDate />,
+    errorElement: <App />,
+  },
+  {
+    path: "measurement/:code",
+    element: <Chart />,
+    errorElement: <App />,
+  },
+])
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement)
 root.render(

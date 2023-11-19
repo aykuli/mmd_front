@@ -6,15 +6,26 @@ import { Accordion, AccordionDetails, AccordionSummary } from "./Accordions"
 import LastMeasurements, { LastDate } from "./LastMeasurements"
 import axios from "../../services/api"
 import PayAttention, { Warning } from "./PayAttention"
+import MeassurementContext, { IMeasurementContext } from "../../context"
 
 interface FamilyResponse {
   users: FamilyMember[]
+}
+
+interface ContextProps {
+  entity: string | null
+  date: Date | null
 }
 
 type LastMeasurementsType = { [id: number]: LastDate[] }
 type WarningMeasurementsType = { [id: number]: Warning[] }
 
 const Dashboard = () => {
+  const [context, setContext] = useState<IMeasurementContext>({
+    entity: null,
+    date: null,
+  })
+
   const [lastMeasurements, setLastMeasurements] =
     useState<LastMeasurementsType | null>(null)
   const [warningMeasurements, setWarningMeasurements] =
@@ -85,34 +96,50 @@ const Dashboard = () => {
   }, [])
 
   return (
-    <div>
-      {isFamilyLoading && "Request is ongoing..."}
-      {family.map(({ id, first_name, member }, index) => {
-        return (
-          <Accordion
-            expanded={expanded === index}
-            onChange={() => setExpanded(expanded === index ? null : index)}
-          >
-            <AccordionSummary aria-controls={first_name} id={String(id)}>
-              <Typography>{`${
-                member ? `${member} ` : ""
-              } ${first_name}`}</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <p>{isMeasuresLoading ? "Loading data" : ""} </p>
+    <MeassurementContext.Provider value={context}>
+      <div>
+        {isFamilyLoading && "Request is ongoing..."}
+        {family.map(({ id, first_name, member }, index) => {
+          return (
+            <Accordion
+              expanded={expanded === index}
+              onChange={() => setExpanded(expanded === index ? null : index)}
+            >
+              <AccordionSummary aria-controls={first_name} id={String(id)}>
+                <Typography>{`${
+                  member ? `${member} ` : ""
+                } ${first_name}`}</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <p>{isMeasuresLoading ? "Loading data" : ""} </p>
 
-              {lastMeasurements && lastMeasurements[id] ? (
-                <LastMeasurements data={lastMeasurements[id]} />
-              ) : null}
+                {lastMeasurements && lastMeasurements[id] ? (
+                  <LastMeasurements
+                    data={lastMeasurements[id]}
+                    onClick={(measuredAt: Date) =>
+                      setContext((prev: ContextProps) => {
+                        return { ...prev, date: measuredAt }
+                      })
+                    }
+                  />
+                ) : null}
 
-              {warningMeasurements && warningMeasurements[id] ? (
-                <PayAttention data={warningMeasurements[id]} />
-              ) : null}
-            </AccordionDetails>
-          </Accordion>
-        )
-      })}
-    </div>
+                {warningMeasurements && warningMeasurements[id] ? (
+                  <PayAttention
+                    data={warningMeasurements[id]}
+                    onClick={(entity: string) =>
+                      setContext((prev: ContextProps) => {
+                        return { ...prev, entity: entity }
+                      })
+                    }
+                  />
+                ) : null}
+              </AccordionDetails>
+            </Accordion>
+          )
+        })}
+      </div>
+    </MeassurementContext.Provider>
   )
 }
 

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
 import axios from "axios"
 import {
   LineChart,
@@ -11,6 +11,8 @@ import {
   ResponsiveContainer,
 } from "recharts"
 import { Measurement } from "../types"
+import context from "../context"
+import MeassurementContext from "../context"
 
 const data = [
   {
@@ -57,30 +59,30 @@ const data = [
   },
 ]
 
-interface ChartProps {
-  entity: string | null
-}
+const Chart = () => {
+  const entity = useContext(MeassurementContext)
 
-const Chart = ({ entity }: ChartProps) => {
+  console.log("entity", entity)
+
   const [isRequestOngoing, setIsRequestOngoing] = useState<boolean>(false)
   const [measurements, setMeasurements] = useState<Measurement[]>([])
 
-  const fetchMEasurements = async () => {
-    setIsRequestOngoing(true)
-    try {
-      const res = await axios.post(
-        `${String(process.env.REACT_APP_DOMAIN)}/api/v1/${entity}`
-      )
-      setMeasurements(res.data.measurements)
-    } catch (e) {
-      console.error(e)
-    } finally {
-      setIsRequestOngoing(false)
-    }
-  }
-  useEffect(() => {
-    fetchMEasurements()
-  }, [])
+  // const fetchMEasurements = async () => {
+  //   setIsRequestOngoing(true)
+  //   try {
+  //     const res = await axios.post(
+  //       `${String(process.env.REACT_APP_DOMAIN)}/api/v1/${entity}`
+  //     )
+  //     setMeasurements(res.data.measurements)
+  //   } catch (e) {
+  //     console.error(e)
+  //   } finally {
+  //     setIsRequestOngoing(false)
+  //   }
+  // }
+  // useEffect(() => {
+  //   fetchMEasurements()
+  // }, [])
 
   return (
     <ResponsiveContainer>

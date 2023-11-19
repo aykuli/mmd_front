@@ -5,7 +5,12 @@ export interface LastDate {
   measured_at: Date
 }
 
-const LastMeasurements = ({ data }: { data: LastDate[] }) => {
+interface LastMeasurementsProps {
+  data: LastDate[]
+  onClick: (date: Date) => void
+}
+
+const LastMeasurements = ({ data, onClick }: LastMeasurementsProps) => {
   return (
     <>
       <Typography align="left">Последние измерения:</Typography>
@@ -13,8 +18,8 @@ const LastMeasurements = ({ data }: { data: LastDate[] }) => {
         {data
           ? data.map(({ id, measured_at }) => {
               return (
-                <ListItem key={id}>
-                  <Link href="#" underline="hover">
+                <ListItem key={id} onClick={() => onClick(measured_at)}>
+                  <Link href={`/measured_at/${measured_at}`} underline="hover">
                     {String(measured_at)}
                   </Link>
                 </ListItem>

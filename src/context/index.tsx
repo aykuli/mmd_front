@@ -1,12 +1,9 @@
 import { createContext } from "react"
-export interface IMeasureemtnContext {
-  entity: string
-  date: Date
+export interface IMeasurementContext {
+  entity: string | null
+  date: Date | null
 }
 
-const meassurementContext = createContext<IMeasureemtnContext | null>(null)
+const MeassurementContext = createContext<IMeasurementContext | null>(null)
 
-const context = {
-  meassurementContext,
-}
-export default context
+export default MeassurementContext
