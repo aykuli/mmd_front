@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react"
 import { AxiosResponse } from "axios"
 import { Typography } from "@mui/material"
+
 import { FamilyMember } from "../../types"
 import { Accordion, AccordionDetails, AccordionSummary } from "./Accordions"
 import LastMeasurements, { LastDate } from "./LastMeasurements"
 import axios from "../../services/api"
 import PayAttention, { Warning } from "./PayAttention"
-import MeassurementContext, { IMeasurementContext } from "../../context"
 
 interface FamilyResponse {
   users: FamilyMember[]
@@ -21,11 +21,6 @@ type LastMeasurementsType = { [id: number]: LastDate[] }
 type WarningMeasurementsType = { [id: number]: Warning[] }
 
 const Dashboard = () => {
-  const [context, setContext] = useState<IMeasurementContext>({
-    entity: null,
-    date: null,
-  })
-
   const [lastMeasurements, setLastMeasurements] =
     useState<LastMeasurementsType | null>(null)
   const [warningMeasurements, setWarningMeasurements] =
@@ -96,12 +91,12 @@ const Dashboard = () => {
   }, [])
 
   return (
-    <MeassurementContext.Provider value={context}>
       <div>
         {isFamilyLoading && "Request is ongoing..."}
         {family.map(({ id, first_name, member }, index) => {
           return (
             <Accordion
+              key={id}
               expanded={expanded === index}
               onChange={() => setExpanded(expanded === index ? null : index)}
             >
@@ -116,30 +111,17 @@ const Dashboard = () => {
                 {lastMeasurements && lastMeasurements[id] ? (
                   <LastMeasurements
                     data={lastMeasurements[id]}
-                    onClick={(measuredAt: Date) =>
-                      setContext((prev: ContextProps) => {
-                        return { ...prev, date: measuredAt }
-                      })
-                    }
                   />
                 ) : null}
 
                 {warningMeasurements && warningMeasurements[id] ? (
-                  <PayAttention
-                    data={warningMeasurements[id]}
-                    onClick={(entity: string) =>
-                      setContext((prev: ContextProps) => {
-                        return { ...prev, entity: entity }
-                      })
-                    }
-                  />
+                  <PayAttention                    data={warningMeasurements[id]}                  />
                 ) : null}
               </AccordionDetails>
             </Accordion>
           )
         })}
       </div>
-    </MeassurementContext.Provider>
   )
 }
 

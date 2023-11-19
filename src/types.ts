@@ -29,3 +29,8 @@ export interface FamilyMember {
   first_name: string
   member: string
 }
+
+export enum WarningEnum {
+  HIGH = "HIGH",
+  LOW = "LOW",
+}

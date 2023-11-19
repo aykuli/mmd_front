@@ -9,35 +9,38 @@ import "./assets/index.css"
 import Dashboard from "./components/Dashboard"
 import Chart from "./components/Chart"
 import MeasurementsByDate from "./components/MeasurementsByDate"
+import WelcomePage from "./components/WelcomePage"
 
 const router = createBrowserRouter([
   {
     path: "/",
     index: true,
-    element: <App />,
-    errorElement: <App />,
+    element: <WelcomePage />,
+    errorElement: <WelcomePage />,
   },
   {
     path: "/dashboard",
     element: <Dashboard />,
-    errorElement: <App />,
+    errorElement: <WelcomePage />,
   },
   {
     path: "measured_at/:date",
     element: <MeasurementsByDate />,
-    errorElement: <App />,
+    errorElement: <WelcomePage />,
   },
   {
     path: "measurement/:code",
     element: <Chart />,
-    errorElement: <App />,
+    errorElement: <WelcomePage />,
   },
 ])
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement)
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <App>
+      <RouterProvider router={router} />
+    </App>
   </React.StrictMode>
 )
 

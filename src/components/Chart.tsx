@@ -67,22 +67,22 @@ const Chart = () => {
   const [isRequestOngoing, setIsRequestOngoing] = useState<boolean>(false)
   const [measurements, setMeasurements] = useState<Measurement[]>([])
 
-  // const fetchMEasurements = async () => {
-  //   setIsRequestOngoing(true)
-  //   try {
-  //     const res = await axios.post(
-  //       `${String(process.env.REACT_APP_DOMAIN)}/api/v1/${entity}`
-  //     )
-  //     setMeasurements(res.data.measurements)
-  //   } catch (e) {
-  //     console.error(e)
-  //   } finally {
-  //     setIsRequestOngoing(false)
-  //   }
-  // }
-  // useEffect(() => {
-  //   fetchMEasurements()
-  // }, [])
+  const fetchMEasurements = async () => {
+    setIsRequestOngoing(true)
+    try {
+      const res = await axios.post(
+        `${String(process.env.REACT_APP_DOMAIN)}/api/v1/${entity}`
+      )
+      setMeasurements(res.data.measurements)
+    } catch (e) {
+      console.error(e)
+    } finally {
+      setIsRequestOngoing(false)
+    }
+  }
+  useEffect(() => {
+    fetchMEasurements()
+  }, [])
 
   return (
     <ResponsiveContainer>
