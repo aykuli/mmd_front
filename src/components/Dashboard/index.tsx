@@ -1,16 +1,11 @@
 import { useEffect, useState } from "react"
 import { AxiosResponse } from "axios"
-import { Link, ListItemIcon, List, ListItem, Typography } from "@mui/material"
-import { ArrowCircleRight } from "@mui/icons-material"
-import { Measurement, FamilyMember } from "../../types"
+import { Typography } from "@mui/material"
+import { FamilyMember } from "../../types"
 import { Accordion, AccordionDetails, AccordionSummary } from "./Accordions"
 import LastMeasurements, { LastDate } from "./LastMeasurements"
 import axios from "../../services/api"
 import PayAttention, { Warning } from "./PayAttention"
-
-interface DashboardProps {
-  onEntityClick: (page: string) => void
-}
 
 interface FamilyResponse {
   users: FamilyMember[]
@@ -19,7 +14,7 @@ interface FamilyResponse {
 type LastMeasurementsType = { [id: number]: LastDate[] }
 type WarningMeasurementsType = { [id: number]: Warning[] }
 
-const Dashboard = ({ onEntityClick }: DashboardProps) => {
+const Dashboard = () => {
   const [lastMeasurements, setLastMeasurements] =
     useState<LastMeasurementsType | null>(null)
   const [warningMeasurements, setWarningMeasurements] =
