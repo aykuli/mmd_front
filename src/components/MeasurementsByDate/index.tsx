@@ -1,70 +1,70 @@
 import { useEffect, useState } from "react"
 import { AxiosResponse } from "axios"
 import { useContext } from "react"
-import MeassurementContext from "../../context"
-import { Measurement } from "../../types"
-import axios from "../../services/api"
 
+import MeassurementContext from "../../context"
+import { Measurement as IMeasurement, IMeasurementInList } from "../../types"
+import axios from "../../services/api"
+import Group from "./Group"
+// todo all interfaces starts from I
 interface Group {
   code: string
   title: string
-}
-
-interface LocalMeasurement {
-  id: number
-  measured_at: Date
-  value: number
-  warning: string
-  max: number
-  min: number
-  unit: string
-  description: string
-  entity_title: string
-  entity_code: string
+  precedence: number
 }
 
 interface GroupedMeasurement {
-  [key: string]: LocalMeasurement[]
+  [key: string]: IMeasurementInList[]
 }
 
 const MeasurementsByDate = () => {
   const [context, setContext] = useContext(MeassurementContext)
 
-  const [groups, setGroups] = useState<Set<Group>>(new Set())
+  const [expanded, setExpanded] = useState<number | null>(0)
+  const [groups, setGroups] = useState<Group[]>([])
+  const [groupCodes, setGroupCodes] = useState<Set<string>>(new Set())
   const [measurements, setMeasurements] = useState<GroupedMeasurement | null>(
     null
   )
   const [isMeasuresLoading, setIsMeasuresLoading] = useState<boolean>(false)
 
   const groupMeasurement = (
-    measurements: Measurement[]
+    measurements: IMeasurement[]
   ): GroupedMeasurement => {
     const result: GroupedMeasurement = {}
 
-    measurements.forEach((measurement) => {
-      setGroups(
-        groups.add({
-          code: measurement.group_code,
-          title: measurement.group_title,
-        })
-      )
-      const localMeasurement: LocalMeasurement = {
-        id: measurement.id,
-        measured_at: measurement.measured_at,
-        value: measurement.value,
-        warning: measurement.warning,
-        max: measurement.max,
-        min: measurement.min,
-        unit: measurement.unit,
-        description: measurement.description,
-        entity_title: measurement.entity_title,
-        entity_code: measurement.entity_code,
+    measurements.forEach((m) => {
+      const group_code = m.group_code || "unlisted"
+
+      if (!groupCodes.has(group_code)) {
+        setGroupCodes(groupCodes.add(group_code))
+        setGroups((prev) => [
+          ...prev,
+          {
+            code: group_code,
+            title: m.group_title || "Вне списка",
+            precedence: m.group_precedence === null ? 1000 : m.group_precedence,
+          },
+        ])
       }
-      if (result[measurement.group_code]) {
-        result[measurement.group_code] =
-          result[measurement.group_code].concat(localMeasurement)
+
+      const localMeasurement: IMeasurementInList = {
+        id: m.id,
+        measured_at: m.measured_at,
+        value: m.value,
+        warning: m.warning,
+        max: m.max,
+        min: m.min,
+        unit: m.unit,
+        description: m.description,
+        entity_title: m.entity_title,
+        entity_code: m.entity_code,
+      }
+
+      if (result[group_code]) {
+        result[group_code] = result[group_code].concat(localMeasurement)
       } else {
-        result[measurement.group_code] = [localMeasurement]
+        result[group_code] = [localMeasurement]
       }
     })
 
@@ -73,14 +73,13 @@ const MeasurementsByDate = () => {
 
   const fetchMeasurements = async () => {
     setIsMeasuresLoading(true)
+    console.log("context: ", context)
     try {
-      const res: AxiosResponse<Measurement[]> = await axios().post(
+      const res: AxiosResponse<IMeasurement[]> = await axios().post(
         `${String(process.env.REACT_APP_DOMAIN)}/api/v1/measurements/list`,
-        { measured_at: context.date, user_id: context.user_id }
+        { measured_at: context.measured_at, user_id: context.user_id }
       )
-      const data = groupMeasurement(res.data)
-      console.log("date: ", data)
-      setMeasurements(data)
+      setMeasurements(groupMeasurement(res.data))
     } catch (e) {
       console.error(e)
     } finally {
@@ -92,15 +91,34 @@ const MeasurementsByDate = () => {
     fetchMeasurements()
   }, [])
 
-  console.log(measurements)
+  console.log()
+  console.log("groups: ", groups)
+  console.log("groupsCodes: ", groupCodes)
+  console.log("measurements: ", measurements)
 
   return (
     <div>
       {isMeasuresLoading && "Request is ongoing..."}
-      {/* {measurements.map(measurement => {
-  return <Measurement 
-})}     */}
-      hello
+      {groups
+        ? Array.from(groups)
+            .sort((prev, curr) => {
+              return prev.precedence > curr.precedence ? 1 : -1
+            })
+            .map(({ code, title }, index) => {
+              return (
+                <Group
+                  {...{
+                    code,
+                    title,
+                    index,
+                    expanded,
+                    setExpanded,
+                    measurements: measurements ? measurements[code] : [],
+                  }}
+                />
+              )
+            })
+        : null}
     </div>
   )
 }

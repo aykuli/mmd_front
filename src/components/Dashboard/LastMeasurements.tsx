@@ -26,7 +26,11 @@ const LastMeasurements = ({ data }: LastMeasurementsProps) => {
                 <ListItem
                   key={id}
                   onClick={() => {
-                    setContext({ ...context, date: measured_at, user_id })
+                    setContext({
+                      entity: null,
+                      measured_at: measured_at,
+                      user_id,
+                    })
                   }}
                 >
                   <Link to={`/measured_at/${measured_at}`}>

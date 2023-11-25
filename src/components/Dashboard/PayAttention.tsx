@@ -33,12 +33,13 @@ const PayAttention = ({ data }: PayAttentionProps) => {
   }
   return (
     <>
-      <Typography align="left">
-        Обратите внимание (за последний год):
-      </Typography>
-      <List dense>
-        {data
-          ? data.map(
+      {data.length ? (
+        <>
+          <Typography align="left">
+            Обратите внимание (за последний год):
+          </Typography>
+          <List dense>
+            {data.map(
               ({
                 id,
                 user_id,
@@ -76,9 +77,10 @@ const PayAttention = ({ data }: PayAttentionProps) => {
                   </ListItem>
                 )
               }
-            )
-          : null}
-      </List>
+            )}
+          </List>
+        </>
+      ) : null}
     </>
   )
 }

@@ -7,17 +7,15 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend
+  Legend,
 } from "recharts"
 import { Measurement } from "../../types"
 import MeasurementContext from "../../context"
-
 
 const Chart = () => {
   const [context, setContext] = useContext(MeasurementContext)
   const [isRequestOngoing, setIsRequestOngoing] = useState<boolean>(false)
   const [measurements, setMeasurements] = useState<Measurement[]>([])
-  console.log(measurements)
 
   const fetchMEasurements = async () => {
     setIsRequestOngoing(true)

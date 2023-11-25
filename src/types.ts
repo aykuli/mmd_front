@@ -18,6 +18,7 @@ export interface Measurement {
   entity_code: string
   group_title: string
   group_code: string
+  group_precedence: number
 }
 
 export interface Entity {
@@ -35,4 +36,18 @@ export interface FamilyMember {
 export enum WarningEnum {
   HIGH = "HIGH",
   LOW = "LOW",
+}
+
+// Measurements by date page
+export interface IMeasurementInList {
+  id: number
+  measured_at: Date
+  value: number
+  warning: string
+  max: number
+  min: number
+  unit: string
+  description: string
+  entity_title: string
+  entity_code: string
 }
