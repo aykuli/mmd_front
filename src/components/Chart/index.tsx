@@ -10,68 +10,21 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts"
-import { Measurement } from "../types"
-import context from "../context"
-import MeassurementContext from "../context"
-
-const data = [
-  {
-    name: "Page A",
-    uv: 4000,
-    pv: 2400,
-    amt: 2400,
-  },
-  {
-    name: "Page B",
-    uv: 3000,
-    pv: 1398,
-    amt: 2210,
-  },
-  {
-    name: "Page C",
-    uv: 2000,
-    pv: 9800,
-    amt: 2290,
-  },
-  {
-    name: "Page D",
-    uv: 2780,
-    pv: 3908,
-    amt: 2000,
-  },
-  {
-    name: "Page E",
-    uv: 1890,
-    pv: 4800,
-    amt: 2181,
-  },
-  {
-    name: "Page F",
-    uv: 2390,
-    pv: 3800,
-    amt: 2500,
-  },
-  {
-    name: "Page G",
-    uv: 3490,
-    pv: 4300,
-    amt: 2100,
-  },
-]
+import { Measurement } from "../../types"
+import MeasurementContext from "../../context"
 
 const Chart = () => {
-  const entity = useContext(MeassurementContext)
-
-  console.log("entity", entity)
-
+  const [context, setContext] = useContext(MeasurementContext)
   const [isRequestOngoing, setIsRequestOngoing] = useState<boolean>(false)
   const [measurements, setMeasurements] = useState<Measurement[]>([])
+  console.log(measurements)
 
   const fetchMEasurements = async () => {
     setIsRequestOngoing(true)
     try {
       const res = await axios.post(
-        `${String(process.env.REACT_APP_DOMAIN)}/api/v1/${entity}`
+        `${String(process.env.REACT_APP_DOMAIN)}/api/v1/${context.entity}`,
+        { user_id: context.user_id }
       )
       setMeasurements(res.data.measurements)
     } catch (e) {

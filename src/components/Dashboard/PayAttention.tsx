@@ -1,15 +1,17 @@
-import {  List, ListItem, Typography } from "@mui/material"
+import { List, ListItem, Typography } from "@mui/material"
 import { pink } from "@mui/material/colors"
 import { Upload, Download } from "@mui/icons-material"
 import { Link } from "react-router-dom"
 import { WarningEnum } from "../../types"
-import {useContext} from "react";
-import MeassurementContext from "../../context";
+import { useContext } from "react"
+import MeassurementContext from "../../context"
 export interface Warning {
   id: number
   entity_title: string
   entity_code: string
   warning: string
+  measured_at: Date
+  user_id: number
 }
 
 export interface PayAttentionProps {
@@ -34,34 +36,45 @@ const PayAttention = ({ data }: PayAttentionProps) => {
       <Typography align="left">Обратите внимание:</Typography>
       <List dense>
         {data
-          ? data.map(({ id, entity_title, entity_code, warning }) => {
-              return (
-                <ListItem
-                  key={id}
-                  onClick={() => {
-                    setContext({...context, entity: entity_code})
-                  }}
-                >
-                  <div title={getTitle(warning)}>
-                    <Link
-                      style={{
-                        display: "flex",
-                      }}
-                      to={`/measurement/${entity_code}`}
-                    >
-                      <Typography variant="body1">{entity_title}</Typography>
-                      {warning === WarningEnum.HIGH && (
-                        <Upload sx={{ color: pink[500] }} />
-                      )}
+          ? data.map(
+              ({
+                id,
+                user_id,
+                entity_title,
+                entity_code,
+                warning,
+                measured_at,
+              }) => {
+                return (
+                  <ListItem
+                    key={id}
+                    onClick={() => {
+                      setContext({ ...context, user_id, entity: entity_code })
+                    }}
+                  >
+                    <div title={getTitle(warning)}>
+                      <Link
+                        style={{
+                          display: "flex",
+                        }}
+                        to={`/measurements/${entity_code}`}
+                      >
+                        <Typography variant="body1">
+                          {`${entity_title} от ${measured_at}`}
+                        </Typography>
 
-                      {warning === WarningEnum.LOW && (
-                        <Download sx={{ color: pink[500] }} />
-                      )}
-                    </Link>
-                  </div>
-                </ListItem>
-              )
-            })
+                        {warning === WarningEnum.HIGH && (
+                          <Upload sx={{ color: pink[500] }} />
+                        )}
+                        {warning === WarningEnum.LOW && (
+                          <Download sx={{ color: pink[500] }} />
+                        )}
+                      </Link>
+                    </div>
+                  </ListItem>
+                )
+              }
+            )
           : null}
       </List>
     </>

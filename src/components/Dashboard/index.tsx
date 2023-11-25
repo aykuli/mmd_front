@@ -12,11 +12,6 @@ interface FamilyResponse {
   users: FamilyMember[]
 }
 
-interface ContextProps {
-  entity: string | null
-  date: Date | null
-}
-
 type LastMeasurementsType = { [id: number]: LastDate[] }
 type WarningMeasurementsType = { [id: number]: Warning[] }
 
@@ -53,13 +48,14 @@ const Dashboard = () => {
   const fetchLastMeasurements = async (user_id: number) => {
     setIsMeasuresLoading(true)
     try {
-      const res: AxiosResponse<{ dates: LastDate[] }> = await axios().post(
+      const res: AxiosResponse<LastDate[]> = await axios().post(
         `${String(process.env.REACT_APP_DOMAIN)}/api/v1/measurements/dates`,
         { user_id }
       )
+
       setLastMeasurements((prev) => {
         const prevState = prev || {}
-        return { [user_id]: res.data.dates, ...prevState }
+        return { ...prevState, [user_id]: res.data }
       })
     } catch (e) {
       console.error(e)
@@ -71,13 +67,13 @@ const Dashboard = () => {
   const fetchWarningMeasurements = async (user_id: number) => {
     setIsMeasuresLoading(true)
     try {
-      const res: AxiosResponse<{ warnings: Warning[] }> = await axios().post(
+      const res: AxiosResponse<Warning[]> = await axios().post(
         `${String(process.env.REACT_APP_DOMAIN)}/api/v1/measurements/warnings`,
         { user_id }
       )
       setWarningMeasurements((prev: WarningMeasurementsType | null) => {
         const prevState = prev || {}
-        return { [user_id]: res.data.warnings, ...prevState }
+        return { ...prevState, [user_id]: res.data }
       })
     } catch (e) {
       console.error(e)
@@ -91,37 +87,35 @@ const Dashboard = () => {
   }, [])
 
   return (
-      <div>
-        {isFamilyLoading && "Request is ongoing..."}
-        {family.map(({ id, first_name, member }, index) => {
-          return (
-            <Accordion
-              key={id}
-              expanded={expanded === index}
-              onChange={() => setExpanded(expanded === index ? null : index)}
-            >
-              <AccordionSummary aria-controls={first_name} id={String(id)}>
-                <Typography>{`${
-                  member ? `${member} ` : ""
-                } ${first_name}`}</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <p>{isMeasuresLoading ? "Loading data" : ""} </p>
+    <div>
+      {isFamilyLoading && "Request is ongoing..."}
+      {family.map(({ id, first_name, member }, index) => {
+        return (
+          <Accordion
+            key={id}
+            expanded={expanded === index}
+            onChange={() => setExpanded(expanded === index ? null : index)}
+          >
+            <AccordionSummary aria-controls={first_name} id={String(id)}>
+              <Typography>{`${
+                member ? `${member} ` : ""
+              } ${first_name}`}</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <p>{isMeasuresLoading ? "Loading data" : ""} </p>
 
-                {lastMeasurements && lastMeasurements[id] ? (
-                  <LastMeasurements
-                    data={lastMeasurements[id]}
-                  />
-                ) : null}
+              {lastMeasurements && lastMeasurements[id] ? (
+                <LastMeasurements data={lastMeasurements[id]} />
+              ) : null}
 
-                {warningMeasurements && warningMeasurements[id] ? (
-                  <PayAttention                    data={warningMeasurements[id]}                  />
-                ) : null}
-              </AccordionDetails>
-            </Accordion>
-          )
-        })}
-      </div>
+              {warningMeasurements && warningMeasurements[id] ? (
+                <PayAttention data={warningMeasurements[id]} />
+              ) : null}
+            </AccordionDetails>
+          </Accordion>
+        )
+      })}
+    </div>
   )
 }
 
