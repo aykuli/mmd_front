@@ -3,7 +3,7 @@ import { AxiosResponse } from "axios"
 import { Typography } from "@mui/material"
 
 import { FamilyMember } from "../../types"
-import { Accordion, AccordionDetails, AccordionSummary } from "./Accordions"
+import { Accordion, AccordionDetails, AccordionSummary } from "../../ui/Accordions"
 import LastMeasurements, { LastDate } from "./LastMeasurements"
 import axios from "../../services/api"
 import PayAttention, { Warning } from "./PayAttention"

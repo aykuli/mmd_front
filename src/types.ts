@@ -8,14 +8,16 @@ export interface Measurement {
   id: number
   measured_at: Date
   value: number
-  code: string
-  title: string
   warning: string
   max: number
   min: number
   unit: string
   description: string
   gender: EntityGender
+  entity_title: string
+  entity_code: string
+  group_title: string
+  group_code: string
 }
 
 export interface Entity {

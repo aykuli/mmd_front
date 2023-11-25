@@ -33,7 +33,9 @@ const PayAttention = ({ data }: PayAttentionProps) => {
   }
   return (
     <>
-      <Typography align="left">Обратите внимание:</Typography>
+      <Typography align="left">
+        Обратите внимание (за последний год):
+      </Typography>
       <List dense>
         {data
           ? data.map(
