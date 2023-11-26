@@ -7,8 +7,11 @@ import {
   ListItemText,
   ListItemAvatar,
   Avatar,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
   Typography,
-  Container,
 } from "@mui/material"
 import { pink } from "@mui/material/colors"
 
@@ -55,76 +58,82 @@ const Measurements = ({ measurements }: MeasurementsProps) => {
           },
           index
         ) => (
-          <Container key={id} disableGutters>
-            <ListItem
-              secondaryAction={
-                <IconButton
-                  aria-label="comment"
-                  onClick={() => {
-                    if (descriptionIndex === index) {
-                      setDescriptionIndex(null)
-                    } else {
-                      setDescriptionIndex(index)
-                    }
-                  }}
-                >
-                  <Comment />
-                </IconButton>
+          <ListItem
+            secondaryAction={
+              <IconButton
+                aria-label="comment"
+                onClick={() => {
+                  if (descriptionIndex === index) {
+                    setDescriptionIndex(null)
+                  } else {
+                    setDescriptionIndex(index)
+                  }
+                }}
+              >
+                <Comment />
+              </IconButton>
+            }
+          >
+            <ListItemAvatar
+              onClick={() =>
+                setContext({
+                  entity: entity_code,
+                  measured_at: measured_at,
+                  user_id,
+                })
               }
             >
-              <ListItemAvatar
-                onClick={() =>
-                  setContext({
-                    entity: entity_code,
-                    measured_at: measured_at,
-                    user_id,
-                  })
-                }
+              <Link
+                title="Посмотреть график всех измерений"
+                to={`/measurements/${entity_code}`}
               >
-                <Link
-                  title="Посмотреть график всех измерений"
-                  to={`/measurements/${entity_code}`}
-                >
-                  <Avatar>
-                    <Image />
-                  </Avatar>
-                </Link>
-              </ListItemAvatar>
+                <Avatar>
+                  <Image />
+                </Avatar>
+              </Link>
+            </ListItemAvatar>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                width: "100%",
+              }}
+            >
+              <ListItemText primary={entity_title} />
               <div
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
-                  width: "100%",
+                  alignItems: "end",
                 }}
               >
-                <ListItemText primary={entity_title} />
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "end",
-                  }}
-                >
-                  {warning === WarningEnum.HIGH && (
-                    <Upload sx={{ color: pink[500] }} />
-                  )}
-                  {warning === WarningEnum.LOW && (
-                    <Download sx={{ color: pink[500] }} />
-                  )}
-                  <ListItemText
-                    title={valueTitle(warning)}
-                    primary={value}
-                    secondary={`${max} - ${min}${unit}`}
-                  />
-                </div>
+                {warning === WarningEnum.HIGH && (
+                  <Upload sx={{ color: pink[500] }} />
+                )}
+                {warning === WarningEnum.LOW && (
+                  <Download sx={{ color: pink[500] }} />
+                )}
+                <ListItemText
+                  title={valueTitle(warning)}
+                  primary={value}
+                  secondary={`${max} - ${min}${unit}`}
+                />
               </div>
-            </ListItem>
-            {descriptionIndex === index ? (
-              <Typography align="left" variant="body2">
-                {description}
-              </Typography>
-            ) : null}
-          </Container>
+            </div>
+
+            <Dialog
+              onClose={() => setDescriptionIndex(null)}
+              open={descriptionIndex === index}
+            >
+              <DialogTitle>{entity_title}</DialogTitle>
+              <DialogContent dividers>
+                <DialogContentText>{description}</DialogContentText>
+              </DialogContent>
+              <DialogContent dividers>
+                <DialogContentText>{`Рефересные значения: ${max} - ${min}${unit}`}</DialogContentText>
+              </DialogContent>
+            </Dialog>
+          </ListItem>
         )
       )}
     </List>

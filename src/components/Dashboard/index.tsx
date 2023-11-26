@@ -3,10 +3,15 @@ import { AxiosResponse } from "axios"
 import { Typography } from "@mui/material"
 
 import { FamilyMember } from "../../types"
-import { Accordion, AccordionDetails, AccordionSummary } from "../../ui/Accordions"
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+} from "../../ui/Accordions"
 import LastMeasurements, { LastDate } from "./LastMeasurements"
 import axios from "../../services/api"
 import PayAttention, { Warning } from "./PayAttention"
+import ExportFromCsv from "../ExportFromCsv"
 
 interface FamilyResponse {
   users: FamilyMember[]
@@ -115,6 +120,8 @@ const Dashboard = () => {
           </Accordion>
         )
       })}
+
+      <ExportFromCsv />
     </div>
   )
 }
