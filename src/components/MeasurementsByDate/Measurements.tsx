@@ -21,6 +21,17 @@ interface MeasurementsProps {
   measurements: IMeasurementInList[]
 }
 
+const valueTitle = (warning: string): string => {
+  if (warning === WarningEnum.HIGH) {
+    return "Выше нормы"
+  }
+  if (warning === WarningEnum.LOW) {
+    return "Ниже нормы"
+  }
+
+  return "В пределах нормы"
+}
+
 const Measurements = ({ measurements }: MeasurementsProps) => {
   const [context, setContext] = useContext(MeasurementContext)
   const [descriptionIndex, setDescriptionIndex] = useState<number | null>(null)
@@ -71,7 +82,7 @@ const Measurements = ({ measurements }: MeasurementsProps) => {
                 }
               >
                 <Link
-                  title="Посмотреть график"
+                  title="Посмотреть график всех измерений"
                   to={`/measurements/${entity_code}`}
                 >
                   <Avatar>
@@ -101,6 +112,7 @@ const Measurements = ({ measurements }: MeasurementsProps) => {
                     <Download sx={{ color: pink[500] }} />
                   )}
                   <ListItemText
+                    title={valueTitle(warning)}
                     primary={value}
                     secondary={`${max} - ${min}${unit}`}
                   />
