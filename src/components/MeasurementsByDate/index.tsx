@@ -6,6 +6,7 @@ import MeassurementContext from "../../context"
 import { Measurement as IMeasurement, IMeasurementInList } from "../../types"
 import axios from "../../services/api"
 import Group from "./Group"
+import { Typography } from "@mui/material"
 // todo all interfaces starts from I
 interface Group {
   code: string
@@ -50,6 +51,7 @@ const MeasurementsByDate = () => {
 
       const localMeasurement: IMeasurementInList = {
         id: m.id,
+        user_id: m.user_id,
         measured_at: m.measured_at,
         value: m.value,
         warning: m.warning,
@@ -91,14 +93,10 @@ const MeasurementsByDate = () => {
     fetchMeasurements()
   }, [])
 
-  console.log()
-  console.log("groups: ", groups)
-  console.log("groupsCodes: ", groupCodes)
-  console.log("measurements: ", measurements)
-
   return (
     <div>
       {isMeasuresLoading && "Request is ongoing..."}
+      <Typography variant="h4">{`Анализ от ${context.measured_at}`}</Typography>
       {groups
         ? Array.from(groups)
             .sort((prev, curr) => {
@@ -107,6 +105,7 @@ const MeasurementsByDate = () => {
             .map(({ code, title }, index) => {
               return (
                 <Group
+                  key={code}
                   {...{
                     code,
                     title,

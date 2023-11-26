@@ -6,6 +6,7 @@ export enum EntityGender {
 
 export interface Measurement {
   id: number
+  user_id: number
   measured_at: Date
   value: number
   warning: string
@@ -41,6 +42,7 @@ export enum WarningEnum {
 // Measurements by date page
 export interface IMeasurementInList {
   id: number
+  user_id: number
   measured_at: Date
   value: number
   warning: string

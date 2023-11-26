@@ -25,8 +25,6 @@ const Group = ({
   setExpanded,
   measurements,
 }: GroupProps) => {
-  console.log(measurements)
-
   return (
     <Accordion
       key={code}
