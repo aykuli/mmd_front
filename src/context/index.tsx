@@ -3,11 +3,13 @@ export interface IMeasurementContext {
   entity: string | null
   measured_at: Date | null
   user_id: number | null
+  token: string | null
 }
 const contextInitValue: IMeasurementContext = {
   entity: null,
   measured_at: null,
   user_id: null,
+  token: null,
 }
 const setContext: any = (context: IMeasurementContext) => {
   return context

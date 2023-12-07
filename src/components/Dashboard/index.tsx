@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useContext } from "react"
 import { AxiosResponse } from "axios"
 import { Typography } from "@mui/material"
 
@@ -11,7 +11,7 @@ import {
 import LastMeasurements, { LastDate } from "./LastMeasurements"
 import axios from "../../services/api"
 import PayAttention, { Warning } from "./PayAttention"
-import ExportFromCsv from "../ExportFromCsv"
+import MeasurementContext from "../../context"
 
 interface FamilyResponse {
   users: FamilyMember[]
@@ -21,6 +21,8 @@ type LastMeasurementsType = { [id: number]: LastDate[] }
 type WarningMeasurementsType = { [id: number]: Warning[] }
 
 const Dashboard = () => {
+  const [context, setContext] = useContext(MeasurementContext)
+
   const [lastMeasurements, setLastMeasurements] =
     useState<LastMeasurementsType | null>(null)
   const [warningMeasurements, setWarningMeasurements] =
@@ -33,9 +35,9 @@ const Dashboard = () => {
   const fetchFamily = async () => {
     setIsFamilyLoading(true)
     try {
-      const familyData: AxiosResponse<FamilyResponse> = await axios().get(
-        `${String(process.env.REACT_APP_DOMAIN)}/api/v1/family`
-      )
+      const familyData: AxiosResponse<FamilyResponse> = await axios(
+        context.token
+      ).get(`${String(process.env.REACT_APP_DOMAIN)}/api/v1/family`)
       const users = familyData.data.users
       setFamily(users)
 
@@ -53,7 +55,7 @@ const Dashboard = () => {
   const fetchLastMeasurements = async (user_id: number) => {
     setIsMeasuresLoading(true)
     try {
-      const res: AxiosResponse<LastDate[]> = await axios().post(
+      const res: AxiosResponse<LastDate[]> = await axios(context.token).post(
         `${String(process.env.REACT_APP_DOMAIN)}/api/v1/measurements/dates`,
         { user_id }
       )
@@ -72,7 +74,7 @@ const Dashboard = () => {
   const fetchWarningMeasurements = async (user_id: number) => {
     setIsMeasuresLoading(true)
     try {
-      const res: AxiosResponse<Warning[]> = await axios().post(
+      const res: AxiosResponse<Warning[]> = await axios(context.token).post(
         `${String(process.env.REACT_APP_DOMAIN)}/api/v1/measurements/warnings`,
         { user_id }
       )
@@ -120,8 +122,6 @@ const Dashboard = () => {
           </Accordion>
         )
       })}
-
-      <ExportFromCsv />
     </div>
   )
 }
