@@ -75,9 +75,11 @@ const MeasurementsByDate = () => {
 
   const fetchMeasurements = async () => {
     setIsMeasuresLoading(true)
-    console.log("context: ", context)
+
     try {
-      const res: AxiosResponse<IMeasurement[]> = await axios().post(
+      const res: AxiosResponse<IMeasurement[]> = await axios(
+        context.token
+      ).post(
         `${String(process.env.REACT_APP_DOMAIN)}/api/v1/measurements/list`,
         { measured_at: context.measured_at, user_id: context.user_id }
       )

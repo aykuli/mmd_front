@@ -1,10 +1,10 @@
-import axios, { AxiosError } from "axios"
+import axios, { AxiosError, AxiosInstance } from "axios"
 
-const createAxiosInstance = () => {
+const createAxiosInstance = (token: string | null): AxiosInstance => {
   const axiosInstance = axios.create({
     responseType: "json",
     withCredentials: true,
-    headers: { "Accept-Language": "en" },
+    headers: { "Accept-Language": "en", Authorization: `Token token=${token}` },
     timeout: 30000,
   })
   axiosInstance.interceptors.response.use(

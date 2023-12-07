@@ -1,19 +1,22 @@
-import React, { useState } from "react"
-import { Link } from "react-router-dom"
+import React, { useState, useContext } from "react"
+import { Navigate } from "react-router-dom"
+import { AxiosResponse } from "axios"
 import {
   Button,
   Box,
   Container,
-  Modal,
+  Dialog,
   FormControl,
   InputLabel,
   OutlinedInput,
   InputAdornment,
   IconButton,
+  FormHelperText,
 } from "@mui/material"
 import { Visibility, VisibilityOff } from "@mui/icons-material"
 
 import axios from "../../services/api"
+import MeasurementContext from "../../context"
 
 const style = {
   position: "absolute" as "absolute",
@@ -22,35 +25,39 @@ const style = {
   transform: "translate(-50%, -50%)",
   width: 400,
   bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
+  boxShadow: 0,
   p: 4,
 }
 
 const WelcomePage = () => {
+  const [context, setContext] = useContext(MeasurementContext)
+
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [email, setEmail] = useState<string>("")
   const [password, setPassword] = useState<string>("")
   const [pwdInputType, setPwdInputType] = useState<string>("password")
   const [isSent, setIsSent] = useState<boolean>(false)
-  const [error, setError] = useState<string | null>(null)
+  const [isRedirect, setIsRedirect] = useState<boolean>(false)
+  const [isError, setIsError] = useState<boolean>(false)
 
   const sendCredentials = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsSent(true)
 
     try {
-      const res = axios().post(
-        `${String(process.env.REACT_APP_DOMAIN)}/api/v1/login`,
-        {
-          email,
-          password,
-        }
-      )
-      console.log((await res).data)
+      const res: AxiosResponse<{ token: string }> = await axios(
+        context.token
+      ).post(`${String(process.env.REACT_APP_DOMAIN)}/api/v1/login`, {
+        email,
+        password,
+      })
+      const { token } = res.data
+      if (token) {
+        setContext({ token })
+        setIsRedirect(true)
+      }
     } catch (e) {
-      console.log(e)
-      setError(String(e))
+      setIsError(true)
     } finally {
       setIsSent(false)
     }
@@ -61,13 +68,13 @@ const WelcomePage = () => {
   ) => {
     event.preventDefault()
   }
-  console.log(email)
-  console.log(password)
+
   return (
     <Container maxWidth="sm" className="container">
+      {isRedirect && <Navigate to="/dashboard" replace />}
       <Button onClick={() => setIsOpen(true)}>Войти</Button>
-      <Link to="dashboard">Войти</Link>
-      <Modal
+      <Dialog
+        fullScreen
         open={isOpen}
         onClose={() => {
           setIsOpen(false)
@@ -81,7 +88,7 @@ const WelcomePage = () => {
           autoComplete="off"
           onSubmit={sendCredentials}
         >
-          <FormControl fullWidth variant="filled" sx={{ m: 1 }}>
+          <FormControl fullWidth variant="filled" sx={{ m: 1 }} error={isError}>
             <InputLabel htmlFor="outlined-adornment-email">Email</InputLabel>
             <OutlinedInput
               id="outlined-adornment-email"
@@ -90,11 +97,17 @@ const WelcomePage = () => {
                 "aria-label": "weight",
               }}
               value={email}
-              onChange={(input) => setEmail(input.currentTarget.value)}
+              onChange={(input) => {
+                setIsError(false)
+                setEmail(input.currentTarget.value)
+              }}
             />
+            {isError && (
+              <FormHelperText id="error-text">Maybe wrong here</FormHelperText>
+            )}
           </FormControl>
 
-          <FormControl fullWidth variant="filled" sx={{ m: 1 }}>
+          <FormControl fullWidth variant="filled" sx={{ m: 1 }} error={isError}>
             <InputLabel htmlFor="outlined-adornment-password">
               Password
             </InputLabel>
@@ -102,7 +115,10 @@ const WelcomePage = () => {
               id="outlined-adornment-password"
               type={pwdInputType}
               value={password}
-              onChange={(input) => setPassword(input.currentTarget.value)}
+              onChange={(input) => {
+                setIsError(false)
+                setPassword(input.currentTarget.value)
+              }}
               endAdornment={
                 <InputAdornment position="end">
                   <IconButton
@@ -125,19 +141,22 @@ const WelcomePage = () => {
               }
               label="Password"
             />
+            {isError && (
+              <FormHelperText id="error-text">or here</FormHelperText>
+            )}
           </FormControl>
 
           <FormControl fullWidth variant="filled" sx={{ m: 1 }}>
             <Button
               type="submit"
               variant="outlined"
-              disabled={email === "" || password === ""}
+              disabled={email === "" || password === "" || isError || isSent}
             >
-              Submit
+              {isSent ? "Loading" : "Submit"}
             </Button>
           </FormControl>
         </Box>
-      </Modal>
+      </Dialog>
     </Container>
   )
 }

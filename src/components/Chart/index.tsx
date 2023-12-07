@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react"
-import axios, { AxiosResponse } from "axios"
+import { AxiosResponse } from "axios"
 import {
   LineChart,
   Line,
@@ -9,8 +9,10 @@ import {
   Tooltip,
   Legend,
 } from "recharts"
+
 import { Measurement } from "../../types"
 import MeasurementContext from "../../context"
+import axios from "../../services/api"
 
 const Chart = () => {
   const [context, setContext] = useContext(MeasurementContext)
@@ -20,7 +22,7 @@ const Chart = () => {
   const fetchMEasurements = async () => {
     setIsRequestOngoing(true)
     try {
-      const res: AxiosResponse<Measurement[]> = await axios.post(
+      const res: AxiosResponse<Measurement[]> = await axios(context.token).post(
         `${String(process.env.REACT_APP_DOMAIN)}/api/v1/${context.entity}`,
         { user_id: context.user_id }
       )

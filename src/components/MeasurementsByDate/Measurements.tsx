@@ -77,6 +77,7 @@ const Measurements = ({ measurements }: MeasurementsProps) => {
             <ListItemAvatar
               onClick={() =>
                 setContext({
+                  ...context,
                   entity: entity_code,
                   measured_at: measured_at,
                   user_id,

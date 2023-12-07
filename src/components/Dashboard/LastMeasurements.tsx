@@ -28,6 +28,7 @@ const LastMeasurements = ({ data }: LastMeasurementsProps) => {
                   key={id}
                   onClick={() => {
                     setContext({
+                      ...context,
                       entity: null,
                       measured_at: measured_at,
                       user_id,
