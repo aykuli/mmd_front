@@ -1,0 +1,7 @@
+{
+  "scripts": {
+    "dokku": {
+      "predeploy": "cp -r ./build/* /home/dokku/mmd-front/www/html"
+    }
+  }
+}
