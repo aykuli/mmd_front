@@ -13,15 +13,13 @@ jobs:
         node-version: [14.x, 16.x, 18.x]
 
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+      - name: Run command on remote server
+        uses: D3rHase/ssh-command-action@v0.2.2
         with:
-          node-version: ${{ matrix.node-version }}
-
-      - name: Build
-        run: |
-          npm install
-          npm run build
-          scp -r build/* ${{ SSH_USER }}@${{ SSH_HOST }}:/home/mymeddata/www
+          host: ${{secrets.SSH_HOST}}
+          user: ${{secrets.SSH_USER}}
+          private_key: ${{secrets.SSH_PRIVATE_KEY}}
+          command: |
+            cd ${{ secrets.PROJECT_FOLDER }};
+            npm run build
+            cp -r build/* /home/mymeddata/www
