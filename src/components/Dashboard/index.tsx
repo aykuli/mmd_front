@@ -37,7 +37,7 @@ const Dashboard = () => {
     try {
       const familyData: AxiosResponse<FamilyResponse> = await axios(
         context.token
-      ).get(`${String(process.env.REACT_APP_DOMAIN)}/api/v1/family`)
+      ).post(`${String(process.env.REACT_APP_DOMAIN)}/api/v1/family`)
       const users = familyData.data.users
       setFamily(users)
 

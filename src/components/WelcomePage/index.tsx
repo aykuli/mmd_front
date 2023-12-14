@@ -47,10 +47,11 @@ const WelcomePage = () => {
     try {
       const res: AxiosResponse<{ token: string }> = await axios(
         context.token
-      ).post(`${String(process.env.REACT_APP_DOMAIN)}/api/v1/login`, {
-        email,
-        password,
-      })
+      ).get(
+        `${String(
+          process.env.REACT_APP_DOMAIN
+        )}/api/v1/login?email=${email}&password=${password}`
+      )
       const { token } = res.data
       if (token) {
         setContext({ token })
