@@ -2,8 +2,6 @@ name: "Deploy"
 on:
   push:
     branches: ["master"]
-  pull_request:
-    branches: ["master"]
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -15,6 +13,10 @@ jobs:
           user: ${{secrets.SSH_USER}}
           private_key: ${{secrets.SSH_PRIVATE_KEY}}
           command: |
-            cd ${{ secrets.PROJECT_FOLDER }};
-            npm run build
-            cp -r build/* /home/mymeddata/www
+            cd ${{secrets.PROJECT_FOLDER}};
+            git reset --hard origin/master;
+            git status;
+            npm install;
+            echo '------- BUILD STARTED --------';
+            npm run build;
+            cp -r build/* /var/www/html;

@@ -15,7 +15,7 @@ import MeasurementContext from "../../context"
 import axios from "../../services/api"
 
 const Chart = () => {
-  const [context, setContext] = useContext(MeasurementContext)
+  const [context] = useContext(MeasurementContext)
   const [isRequestOngoing, setIsRequestOngoing] = useState<boolean>(false)
   const [measurements, setMeasurements] = useState<Measurement[]>([])
 

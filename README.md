@@ -1,24 +1,8 @@
-front:
-
-* see measurements
-
-back:
-
-* register components
-
-```shell
-scp -r build/* root@185.221.213.49:/home/mymeddata/www
-```
-
-## Deploy
-
-1. git commit
-2. npm run build
-3. scp -r build/* root@185.221.213.49:/home/mymeddata/www
-
-## Questions & Issues
+# Todos
 
 * how to uglify code
+* adaptivenes
+* max min coridor
 
 ## Issues
 

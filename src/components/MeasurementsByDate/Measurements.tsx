@@ -11,7 +11,6 @@ import {
   DialogTitle,
   DialogContent,
   DialogContentText,
-  Typography,
 } from "@mui/material"
 import { pink } from "@mui/material/colors"
 
