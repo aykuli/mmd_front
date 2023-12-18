@@ -1,14 +1,11 @@
 .App {
   text-align: center;
   background-color: #dddddd;
-}
-
-.container {
   height: 100vh;
 }
 
-.title {
-  color: #222222;
+.container {
+  padding-top: 60px;
 }
 
 .App-header {
@@ -17,5 +14,28 @@
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  padding-top: 50px;
+  padding-right: 20px;
+  padding-left: 20px;
+  padding-bottom: 60px;
+}
+
+.App-welcome-icon {
+  margin-top: 20px;
+}
+
+.App-welcome-btn {
+  font-size: 3rem;
+  border: 1x solid #1b5481;
+  border-radius: 6px;
+  background: transparent;
+  color: #1b5481;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-right: 20px;
+  padding-left: 20px;
+}
+
+.welcome-input {
+  width: 95%;
 }
