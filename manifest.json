@@ -1,9 +1,0 @@
-{
-  "name": "mymeddata",
-  "short_name": "mmd",
-  "theme_color": "#1b5481",
-  "background_color": "#eaf2f9",
-  "display": "standalone",
-  "scope": "/",
-  "start_url": "/"
-}
