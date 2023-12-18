@@ -14,7 +14,7 @@ jobs:
           private_key: ${{secrets.SSH_PRIVATE_KEY}}
           command: |
             cd ${{secrets.PROJECT_FOLDER}};
-            git reset --hard origin/master;
+            git pull;
             git status;
             npm install;
             echo '------- BUILD STARTED --------';
