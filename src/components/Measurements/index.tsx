@@ -11,10 +11,10 @@ import {
 } from "../../ui/Accordions"
 import axios from "../../services/api"
 import MeasurementContext from "../../context"
-import { IMeasurement, IGroupedMeasurement } from "../../types"
+import { IGroupedMeasurement } from "../../types"
 
 const Measurements = () => {
-  const [context, setContext] = useContext(MeasurementContext)
+  const [context] = useContext(MeasurementContext)
 
   const [measurements, setMeasurements] = useState<IGroupedMeasurement>({})
   const [isMeasuresLoading, setIsMeasuresLoading] = useState<boolean>(false)
@@ -41,7 +41,7 @@ const Measurements = () => {
 
   useEffect(() => {
     fetchMeasurements(context.user_id)
-  }, [])
+  }, [context.user_id])
 
   return (
     <>

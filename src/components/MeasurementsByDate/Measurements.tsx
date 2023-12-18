@@ -44,18 +44,8 @@ const Measurements = ({ measurements }: MeasurementsProps) => {
           },
           index
         ) => (
-          <li
-            key={id}
-            style={{
-              display: "block",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
+          <li key={id} style={{ display: "block" }}>
+            <div style={{ display: "flex", alignItems: "center" }}>
               <Link
                 onClick={() =>
                   setContext({

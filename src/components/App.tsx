@@ -7,6 +7,7 @@ import Logout from "./Logout"
 import MeassurementContext, { contextInitValue } from "../context"
 import theme, { headerStyle, welcomeStyle } from "../ui/theme"
 import "../assets/App.css"
+import AddingAction from "./AddingModal/AddingActionModal"
 
 const App = ({ children }: { children: ReactElement }) => {
   const [context, setContext] = useState(contextInitValue)
@@ -23,7 +24,10 @@ const App = ({ children }: { children: ReactElement }) => {
               Анализы
             </Typography>
             {context.token ? (
-              <Logout />
+              <>
+                <AddingAction />
+                <Logout />
+              </>
             ) : (
               <>
                 <Typography variant="h4">себя и семьи</Typography>
