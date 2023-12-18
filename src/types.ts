@@ -28,11 +28,12 @@ export interface Entity {
   title: string
 }
 
-export interface IFamilyMember {
+export interface IUser {
   id: number
   first_name: string
   member: string
   parent_id: null | number
+  gender: string
 }
 
 export enum WarningEnum {
@@ -69,5 +70,11 @@ export interface IEntity {
   unit: string
   description: string
   gender: string
-  group_id: number
+  group_id: number | string
+}
+
+export interface IEntityGroup {
+  id: number
+  code: string
+  title: string
 }
