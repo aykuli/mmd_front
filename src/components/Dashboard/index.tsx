@@ -122,7 +122,9 @@ const Dashboard = () => {
                   onClick={() => {
                     setContext({
                       ...context,
-                      entity: null,
+                      entity_code: null,
+                      entity_title: null,
+                      entity_unit: null,
                       measured_at: null,
                       user_id: id,
                     })

@@ -22,7 +22,7 @@ const Measurements = () => {
 
   const fetchMeasurements = async (user_id: number) => {
     setIsMeasuresLoading(true)
-    console.log(user_id)
+
     try {
       const res: AxiosResponse<IGroupedMeasurement> = await axios(
         context.token
