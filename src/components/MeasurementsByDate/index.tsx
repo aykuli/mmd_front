@@ -14,7 +14,7 @@ interface IGroup {
   precedence: number
 }
 
-interface GroupedMeasurement {
+interface IGroupedMeasurement {
   [key: string]: IMeasurementInList[]
 }
 
@@ -24,15 +24,15 @@ const MeasurementsByDate = () => {
   const [expanded, setExpanded] = useState<number | null>(0)
   const [groups, setGroups] = useState<IGroup[]>([])
   const [groupCodes, setGroupCodes] = useState<Set<string>>(new Set())
-  const [measurements, setMeasurements] = useState<GroupedMeasurement | null>(
+  const [measurements, setMeasurements] = useState<IGroupedMeasurement | null>(
     null
   )
   const [isMeasuresLoading, setIsMeasuresLoading] = useState<boolean>(false)
 
   const groupMeasurement = (
     measurements: IMeasurement[]
-  ): GroupedMeasurement => {
-    const result: GroupedMeasurement = {}
+  ): IGroupedMeasurement => {
+    const result: IGroupedMeasurement = {}
 
     measurements.forEach((m) => {
       const group_code = m.group_code || "unlisted"

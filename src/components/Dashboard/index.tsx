@@ -58,7 +58,7 @@ const Dashboard = () => {
     try {
       const res: AxiosResponse<LastDate[]> = await axios(context.token).post(
         `${String(process.env.REACT_APP_DOMAIN)}/api/v1/measurements/dates`,
-        { user_id }
+        { user_id, limit: 5 }
       )
 
       setLastMeasurements((prev) => {
@@ -71,14 +71,13 @@ const Dashboard = () => {
       setIsMeasuresLoading(false)
     }
   }
-  console.log("Dashboard page")
 
   const fetchWarningMeasurements = async (user_id: number) => {
     setIsMeasuresLoading(true)
     try {
       const res: AxiosResponse<Warning[]> = await axios(context.token).post(
         `${String(process.env.REACT_APP_DOMAIN)}/api/v1/measurements/warnings`,
-        { user_id }
+        { user_id, limit: 5 }
       )
       setWarningMeasurements((prev: WarningMeasurementsType | null) => {
         const prevState = prev || {}

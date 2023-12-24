@@ -5,6 +5,7 @@ import Dashboard from "./components/Dashboard"
 import Chart from "./components/Chart"
 import MeasurementsByDate from "./components/MeasurementsByDate"
 import WelcomePage from "./components/WelcomePage"
+import Measurements from "./components/Measurements"
 
 const routes = createBrowserRouter([
   {
@@ -26,6 +27,11 @@ const routes = createBrowserRouter([
   {
     path: "measurements/:code",
     element: <Chart />,
+    errorElement: <WelcomePage />,
+  },
+  {
+    path: "measurements",
+    element: <Measurements />,
     errorElement: <WelcomePage />,
   },
 ])
