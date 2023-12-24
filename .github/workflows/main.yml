@@ -19,4 +19,6 @@ jobs:
             npm install;
             echo '------- BUILD STARTED --------';
             npm run build;
-            cp -r build/* /var/www/html;
+            cp -rf /var/www/html/* /var/www/html_old; 
+            rm -rdf /var/www/html/*;
+            cp -rf build/* /var/www/html;
