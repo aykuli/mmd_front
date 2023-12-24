@@ -1,17 +1,18 @@
 import { useEffect, useState, useContext } from "react"
 import { AxiosResponse } from "axios"
 import { Typography } from "@mui/material"
+import { Navigate } from "react-router-dom"
 
-import { FamilyMember } from "../../types"
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
 } from "../../ui/Accordions"
 import LastMeasurements, { LastDate } from "./LastMeasurements"
-import axios from "../../services/api"
 import PayAttention, { Warning } from "./PayAttention"
+import axios from "../../services/api"
 import MeasurementContext from "../../context"
+import { FamilyMember } from "../../types"
 
 interface FamilyResponse {
   users: FamilyMember[]
@@ -70,6 +71,7 @@ const Dashboard = () => {
       setIsMeasuresLoading(false)
     }
   }
+  console.log("Dashboard page")
 
   const fetchWarningMeasurements = async (user_id: number) => {
     setIsMeasuresLoading(true)
@@ -95,6 +97,7 @@ const Dashboard = () => {
 
   return (
     <div>
+      {!context.token && <Navigate to="/" replace />}
       {isFamilyLoading && "Request is ongoing..."}
       {family.map(({ id, first_name, member }, index) => {
         return (

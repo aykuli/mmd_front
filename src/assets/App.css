@@ -9,15 +9,7 @@
 }
 
 .App-header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   font-size: calc(10px + 2vmin);
-  padding-top: 50px;
-  padding-right: 20px;
-  padding-left: 20px;
-  padding-bottom: 60px;
 }
 
 .App-welcome-icon {
