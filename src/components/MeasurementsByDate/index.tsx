@@ -1,14 +1,14 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useContext } from "react"
+import { Navigate } from "react-router-dom"
 import { AxiosResponse } from "axios"
-import { useContext } from "react"
+import { Typography } from "@mui/material"
 
+import Group from "./Group"
 import MeassurementContext from "../../context"
 import { Measurement as IMeasurement, IMeasurementInList } from "../../types"
 import axios from "../../services/api"
-import Group from "./Group"
-import { Typography } from "@mui/material"
-// todo all interfaces starts from I
-interface Group {
+
+interface IGroup {
   code: string
   title: string
   precedence: number
@@ -19,10 +19,10 @@ interface GroupedMeasurement {
 }
 
 const MeasurementsByDate = () => {
-  const [context, setContext] = useContext(MeassurementContext)
+  const [context] = useContext(MeassurementContext)
 
   const [expanded, setExpanded] = useState<number | null>(0)
-  const [groups, setGroups] = useState<Group[]>([])
+  const [groups, setGroups] = useState<IGroup[]>([])
   const [groupCodes, setGroupCodes] = useState<Set<string>>(new Set())
   const [measurements, setMeasurements] = useState<GroupedMeasurement | null>(
     null
@@ -97,6 +97,7 @@ const MeasurementsByDate = () => {
 
   return (
     <div>
+      {!context.token && <Navigate to="/" replace />}
       {isMeasuresLoading && "Request is ongoing..."}
       <Typography variant="h4">{`Анализ от ${context.measured_at}`}</Typography>
       {groups

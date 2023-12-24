@@ -1,4 +1,5 @@
 import { useState, useEffect, useContext } from "react"
+import { Navigate } from "react-router-dom"
 import { AxiosResponse } from "axios"
 import {
   LineChart,
@@ -42,29 +43,32 @@ const Chart = () => {
   }, [])
 
   return (
-    <LineChart
-      width={500}
-      height={300}
-      data={measurements}
-      margin={{
-        top: 5,
-        right: 30,
-        left: 20,
-        bottom: 5,
-      }}
-    >
-      <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey="measured_at" />
-      <YAxis />
-      <Tooltip />
-      <Legend />
-      <Line
-        type="monotone"
-        dataKey="value"
-        stroke="#8884d8"
-        activeDot={{ r: 8 }}
-      />
-    </LineChart>
+    <>
+      {!context.token && <Navigate to="/" replace />}
+      <LineChart
+        width={500}
+        height={300}
+        data={measurements}
+        margin={{
+          top: 5,
+          right: 30,
+          left: 20,
+          bottom: 5,
+        }}
+      >
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="measured_at" />
+        <YAxis />
+        <Tooltip />
+        <Legend />
+        <Line
+          type="monotone"
+          dataKey="value"
+          stroke="#8884d8"
+          activeDot={{ r: 8 }}
+        />
+      </LineChart>
+    </>
   )
 }
 

@@ -26,7 +26,6 @@ const style = {
   width: 400,
   bgcolor: "background.paper",
   boxShadow: 0,
-  p: 4,
 }
 
 const WelcomePage = () => {
@@ -73,7 +72,9 @@ const WelcomePage = () => {
   return (
     <Container maxWidth="sm" className="container">
       {isRedirect && <Navigate to="/dashboard" replace />}
-      <Button onClick={() => setIsOpen(true)}>Войти</Button>
+      <button className="App-welcome-btn" onClick={() => setIsOpen(true)}>
+        Войти
+      </button>
       <Dialog
         fullScreen
         open={isOpen}
@@ -89,11 +90,17 @@ const WelcomePage = () => {
           autoComplete="off"
           onSubmit={sendCredentials}
         >
-          <FormControl fullWidth variant="filled" sx={{ m: 1 }} error={isError}>
-            <InputLabel htmlFor="outlined-adornment-email">Email</InputLabel>
+          <FormControl
+            variant="filled"
+            sx={{ m: 1 }}
+            error={isError}
+            margin="none"
+            className="welcome-input"
+          >
+            <InputLabel htmlFor="email">Email</InputLabel>
             <OutlinedInput
-              id="outlined-adornment-email"
-              aria-describedby="outlined-weight-helper-text"
+              id="email"
+              aria-describedby="email"
               inputProps={{
                 "aria-label": "weight",
               }}
@@ -108,12 +115,15 @@ const WelcomePage = () => {
             )}
           </FormControl>
 
-          <FormControl fullWidth variant="filled" sx={{ m: 1 }} error={isError}>
-            <InputLabel htmlFor="outlined-adornment-password">
-              Password
-            </InputLabel>
+          <FormControl
+            className="welcome-input"
+            variant="filled"
+            sx={{ m: 1 }}
+            error={isError}
+          >
+            <InputLabel htmlFor="password">Password</InputLabel>
             <OutlinedInput
-              id="outlined-adornment-password"
+              id="password"
               type={pwdInputType}
               value={password}
               onChange={(input) => {
@@ -143,11 +153,11 @@ const WelcomePage = () => {
               label="Password"
             />
             {isError && (
-              <FormHelperText id="error-text">or here</FormHelperText>
+              <FormHelperText id="error-credeatials">or here</FormHelperText>
             )}
           </FormControl>
 
-          <FormControl fullWidth variant="filled" sx={{ m: 1 }}>
+          <FormControl className="welcome-input" variant="filled" sx={{ m: 1 }}>
             <Button
               type="submit"
               variant="outlined"
