@@ -1,22 +1,30 @@
 import { useContext, useEffect, useState } from "react"
 import { Navigate } from "react-router-dom"
 import { AxiosResponse } from "axios"
+import { Typography } from "@mui/material"
 
+import MeasurementsList from "../MeasurementsByDate/Measurements"
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+} from "../../ui/Accordions"
 import axios from "../../services/api"
 import MeasurementContext from "../../context"
-import { IMeasurement } from "../../types"
+import { IMeasurement, IGroupedMeasurement } from "../../types"
 
 const Measurements = () => {
   const [context, setContext] = useContext(MeasurementContext)
 
-  const [measurements, setMeasurements] = useState<IMeasurement[]>([])
+  const [measurements, setMeasurements] = useState<IGroupedMeasurement>({})
   const [isMeasuresLoading, setIsMeasuresLoading] = useState<boolean>(false)
+  const [expanded, setExpanded] = useState<string | null>(null)
 
   const fetchMeasurements = async (user_id: number) => {
     setIsMeasuresLoading(true)
     console.log(user_id)
     try {
-      const res: AxiosResponse<IMeasurement[]> = await axios(
+      const res: AxiosResponse<IGroupedMeasurement> = await axios(
         context.token
       ).post(
         `${String(process.env.REACT_APP_DOMAIN)}/api/v1/measurements/all`,
@@ -38,8 +46,31 @@ const Measurements = () => {
   return (
     <>
       {!context.token && <Navigate to="/" replace />}
-      {measurements.map(({ id, measured_at }) => {
-        return <div>{id}</div>
+      {Object.keys(measurements).map((key) => {
+        return (
+          <Accordion
+            key={key}
+            expanded={expanded === key}
+            onChange={() => setExpanded(expanded === key ? null : key)}
+          >
+            <AccordionSummary aria-controls={key} id={key}>
+              <div
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Typography variant="h6">{key}</Typography>
+              </div>
+            </AccordionSummary>
+            <AccordionDetails>
+              <p>{isMeasuresLoading ? "Loading data" : ""} </p>
+
+              <MeasurementsList measurements={measurements[key]} />
+            </AccordionDetails>
+          </Accordion>
+        )
       })}
     </>
   )
