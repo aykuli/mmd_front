@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from "react"
+import { Link, Navigate } from "react-router-dom"
 import { AxiosResponse } from "axios"
 import { Typography } from "@mui/material"
-import { Navigate } from "react-router-dom"
 
 import {
   Accordion,
@@ -22,7 +22,7 @@ type LastMeasurementsType = { [id: number]: LastDate[] }
 type WarningMeasurementsType = { [id: number]: Warning[] }
 
 const Dashboard = () => {
-  const [context, setContext] = useContext(MeasurementContext)
+  const [context] = useContext(MeasurementContext)
 
   const [lastMeasurements, setLastMeasurements] =
     useState<LastMeasurementsType | null>(null)
@@ -42,7 +42,7 @@ const Dashboard = () => {
       const users = familyData.data.users
       setFamily(users)
 
-      users.forEach(({ id, first_name }) => {
+      users.forEach(({ id }) => {
         fetchLastMeasurements(id)
         fetchWarningMeasurements(id)
       })
@@ -77,7 +77,7 @@ const Dashboard = () => {
     try {
       const res: AxiosResponse<Warning[]> = await axios(context.token).post(
         `${String(process.env.REACT_APP_DOMAIN)}/api/v1/measurements/warnings`,
-        { user_id, limit: 5 }
+        { user_id }
       )
       setWarningMeasurements((prev: WarningMeasurementsType | null) => {
         const prevState = prev || {}
@@ -106,9 +106,19 @@ const Dashboard = () => {
             onChange={() => setExpanded(expanded === index ? null : index)}
           >
             <AccordionSummary aria-controls={first_name} id={String(id)}>
-              <Typography>{`${
-                member ? `${member} ` : ""
-              } ${first_name}`}</Typography>
+              <div
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Typography variant="h4">{`${
+                  member ? `${member} ` : ""
+                } ${first_name}`}</Typography>
+
+                <Link to="/measurements">Все измерения</Link>
+              </div>
             </AccordionSummary>
             <AccordionDetails>
               <p>{isMeasuresLoading ? "Loading data" : ""} </p>

@@ -5,7 +5,7 @@ import { Typography } from "@mui/material"
 
 import Group from "./Group"
 import MeassurementContext from "../../context"
-import { Measurement as IMeasurement, IMeasurementInList } from "../../types"
+import { IMeasurement, IMeasurementInList } from "../../types"
 import axios from "../../services/api"
 
 interface IGroup {

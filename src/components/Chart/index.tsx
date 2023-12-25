@@ -11,19 +11,21 @@ import {
   Legend,
 } from "recharts"
 
-import { Measurement } from "../../types"
+import { IMeasurement } from "../../types"
 import MeasurementContext from "../../context"
 import axios from "../../services/api"
 
 const Chart = () => {
   const [context] = useContext(MeasurementContext)
   const [isRequestOngoing, setIsRequestOngoing] = useState<boolean>(false)
-  const [measurements, setMeasurements] = useState<Measurement[]>([])
+  const [measurements, setMeasurements] = useState<IMeasurement[]>([])
 
   const fetchMEasurements = async () => {
     setIsRequestOngoing(true)
     try {
-      const res: AxiosResponse<Measurement[]> = await axios(context.token).post(
+      const res: AxiosResponse<IMeasurement[]> = await axios(
+        context.token
+      ).post(
         `${String(process.env.REACT_APP_DOMAIN)}/api/v1/${context.entity}`,
         { user_id: context.user_id }
       )

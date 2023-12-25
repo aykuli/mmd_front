@@ -4,7 +4,7 @@ export enum EntityGender {
   both = "both",
 }
 
-export interface Measurement {
+export interface IMeasurement {
   id: number
   user_id: number
   measured_at: Date
