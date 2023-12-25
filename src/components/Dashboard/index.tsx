@@ -22,7 +22,7 @@ type LastMeasurementsType = { [id: number]: LastDate[] }
 type WarningMeasurementsType = { [id: number]: Warning[] }
 
 const Dashboard = () => {
-  const [context] = useContext(MeasurementContext)
+  const [context, setContext] = useContext(MeasurementContext)
 
   const [lastMeasurements, setLastMeasurements] =
     useState<LastMeasurementsType | null>(null)
@@ -117,7 +117,19 @@ const Dashboard = () => {
                   member ? `${member} ` : ""
                 } ${first_name}`}</Typography>
 
-                <Link to="/measurements">Все измерения</Link>
+                <Link
+                  to="/measurements"
+                  onClick={() => {
+                    setContext({
+                      ...context,
+                      entity: null,
+                      measured_at: null,
+                      user_id: id,
+                    })
+                  }}
+                >
+                  Все измерения
+                </Link>
               </div>
             </AccordionSummary>
             <AccordionDetails>
