@@ -99,7 +99,7 @@ const MeasurementsByDate = () => {
     <div>
       {!context.token && <Navigate to="/" replace />}
       {isMeasuresLoading && "Request is ongoing..."}
-      <Typography variant="h4">{`Анализ от ${context.measured_at}`}</Typography>
+      <Typography variant="h4">{`от ${context.measured_at}`}</Typography>
       {groups
         ? Array.from(groups)
             .sort((prev, curr) => {
