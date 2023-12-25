@@ -19,6 +19,11 @@ jobs:
             npm install;
             echo '------- BUILD STARTED --------';
             npm run build;
+            echo '------- BUILD FINISHED --------';
+
+            echo '------- START COPY BUILD FILES --------';
             cp -rf /var/www/html/* /var/www/html_old/*; 
             rm -rdf /var/www/html/*;
             cp -rf build/* /var/www/html;
+            echo '------- FINISH COPY BUILD FILES --------';
+            ls -al /var/www/html;
