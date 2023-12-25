@@ -3,35 +3,22 @@ import { Link } from "react-router-dom"
 import {
   IconButton,
   List,
-  ListItem,
-  ListItemText,
-  ListItemAvatar,
   Avatar,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogContentText,
+  Typography,
 } from "@mui/material"
 import { pink } from "@mui/material/colors"
 
 import MeasurementContext from "../../context"
 import { IMeasurementInList, WarningEnum } from "../../types"
 
-import { Comment, Image, Upload, Download } from "@mui/icons-material"
+import { Comment, Upload, Download, QueryStats } from "@mui/icons-material"
 
 interface MeasurementsProps {
   measurements: IMeasurementInList[]
-}
-
-const valueTitle = (warning: string): string => {
-  if (warning === WarningEnum.HIGH) {
-    return "Выше нормы"
-  }
-  if (warning === WarningEnum.LOW) {
-    return "Ниже нормы"
-  }
-
-  return "В пределах нормы"
 }
 
 const Measurements = ({ measurements }: MeasurementsProps) => {
@@ -57,8 +44,64 @@ const Measurements = ({ measurements }: MeasurementsProps) => {
           },
           index
         ) => (
-          <ListItem
-            secondaryAction={
+          <li
+            key={id}
+            style={{
+              display: "block",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <Link
+                onClick={() =>
+                  setContext({
+                    ...context,
+                    entity: entity_code,
+                    measured_at: measured_at,
+                    user_id,
+                  })
+                }
+                title="Посмотреть график всех измерений"
+                to={`/measurements/${entity_code}`}
+                style={{
+                  marginRight: 10,
+                }}
+              >
+                <Avatar>
+                  <QueryStats />
+                </Avatar>
+              </Link>
+              <Typography>{entity_title}</Typography>
+            </div>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr 30px",
+                alignItems: "center",
+              }}
+            >
+              <div style={{ display: "flex", marginLeft: 50 }}>
+                <Typography
+                  variant="body1"
+                  align="left"
+                  style={{ marginRight: 10 }}
+                >{`${value} ${unit}`}</Typography>
+
+                {warning === WarningEnum.HIGH && (
+                  <Upload sx={{ color: pink[500] }} />
+                )}
+                {warning === WarningEnum.LOW && (
+                  <Download sx={{ color: pink[500] }} />
+                )}
+              </div>
+              <Typography
+                variant="body1"
+                align="right"
+              >{`${max} - ${min}`}</Typography>
               <IconButton
                 aria-label="comment"
                 onClick={() => {
@@ -71,54 +114,6 @@ const Measurements = ({ measurements }: MeasurementsProps) => {
               >
                 <Comment />
               </IconButton>
-            }
-          >
-            <ListItemAvatar
-              onClick={() =>
-                setContext({
-                  ...context,
-                  entity: entity_code,
-                  measured_at: measured_at,
-                  user_id,
-                })
-              }
-            >
-              <Link
-                title="Посмотреть график всех измерений"
-                to={`/measurements/${entity_code}`}
-              >
-                <Avatar>
-                  <Image />
-                </Avatar>
-              </Link>
-            </ListItemAvatar>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                width: "100%",
-              }}
-            >
-              <ListItemText primary={entity_title} />
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "end",
-                }}
-              >
-                {warning === WarningEnum.HIGH && (
-                  <Upload sx={{ color: pink[500] }} />
-                )}
-                {warning === WarningEnum.LOW && (
-                  <Download sx={{ color: pink[500] }} />
-                )}
-                <ListItemText
-                  title={valueTitle(warning)}
-                  primary={value}
-                  secondary={`${max} - ${min}${unit}`}
-                />
-              </div>
             </div>
 
             <Dialog
@@ -133,7 +128,7 @@ const Measurements = ({ measurements }: MeasurementsProps) => {
                 <DialogContentText>{`Рефересные значения: ${max} - ${min}${unit}`}</DialogContentText>
               </DialogContent>
             </Dialog>
-          </ListItem>
+          </li>
         )
       )}
     </List>
