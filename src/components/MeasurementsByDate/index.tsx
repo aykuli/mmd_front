@@ -5,17 +5,17 @@ import { Typography } from "@mui/material"
 
 import Group from "./Group"
 import MeassurementContext from "../../context"
-import { IMeasurement, IMeasurementInList } from "../../types"
+import {
+  IMeasurement,
+  IMeasurementInList,
+  IGroupedMeasurement,
+} from "../../types"
 import axios from "../../services/api"
 
 interface IGroup {
   code: string
   title: string
   precedence: number
-}
-
-interface IGroupedMeasurement {
-  [key: string]: IMeasurementInList[]
 }
 
 const MeasurementsByDate = () => {

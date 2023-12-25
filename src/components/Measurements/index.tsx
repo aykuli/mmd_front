@@ -1,23 +1,33 @@
 import { useContext, useEffect, useState } from "react"
+import { Navigate } from "react-router-dom"
 import { AxiosResponse } from "axios"
+import { Typography } from "@mui/material"
 
+import MeasurementsList from "../MeasurementsByDate/Measurements"
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+} from "../../ui/Accordions"
 import axios from "../../services/api"
 import MeasurementContext from "../../context"
-import { IMeasurement } from "../../types"
+import { IMeasurement, IGroupedMeasurement } from "../../types"
 
 const Measurements = () => {
   const [context, setContext] = useContext(MeasurementContext)
 
-  const [Measurements, setMeasurements] = useState<IMeasurement[]>([])
+  const [measurements, setMeasurements] = useState<IGroupedMeasurement>({})
   const [isMeasuresLoading, setIsMeasuresLoading] = useState<boolean>(false)
+  const [expanded, setExpanded] = useState<string | null>(null)
 
-  const fetchLastMeasurements = async (user_id: number) => {
+  const fetchMeasurements = async (user_id: number) => {
     setIsMeasuresLoading(true)
+    console.log(user_id)
     try {
-      const res: AxiosResponse<IMeasurement[]> = await axios(
+      const res: AxiosResponse<IGroupedMeasurement> = await axios(
         context.token
       ).post(
-        `${String(process.env.REACT_APP_DOMAIN)}/api/v1/measurements/dates`,
+        `${String(process.env.REACT_APP_DOMAIN)}/api/v1/measurements/all`,
         { user_id }
       )
 
@@ -30,10 +40,40 @@ const Measurements = () => {
   }
 
   useEffect(() => {
-    fetchLastMeasurements(context.user_id)
+    fetchMeasurements(context.user_id)
   }, [])
 
-  return <>hello</>
+  return (
+    <>
+      {!context.token && <Navigate to="/" replace />}
+      {Object.keys(measurements).map((key) => {
+        return (
+          <Accordion
+            key={key}
+            expanded={expanded === key}
+            onChange={() => setExpanded(expanded === key ? null : key)}
+          >
+            <AccordionSummary aria-controls={key} id={key}>
+              <div
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Typography variant="h6">{key}</Typography>
+              </div>
+            </AccordionSummary>
+            <AccordionDetails>
+              <p>{isMeasuresLoading ? "Loading data" : ""} </p>
+
+              <MeasurementsList measurements={measurements[key]} />
+            </AccordionDetails>
+          </Accordion>
+        )
+      })}
+    </>
+  )
 }
 
 export default Measurements

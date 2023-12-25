@@ -53,3 +53,7 @@ export interface IMeasurementInList {
   entity_title: string
   entity_code: string
 }
+
+export interface IGroupedMeasurement {
+  [key: string]: IMeasurementInList[]
+}
