@@ -62,6 +62,9 @@ const Measurements = ({ measurements }: MeasurementsProps) => {
                     ...context,
                     entity: entity_code,
                     measured_at: measured_at,
+                    entity_unit: unit,
+                    entity_code,
+                    entity_title,
                     user_id,
                   })
                 }

@@ -12,6 +12,7 @@ export interface Warning {
   warning: string
   measured_at: Date
   user_id: number
+  unit: string
 }
 
 export interface PayAttentionProps {
@@ -47,12 +48,20 @@ const PayAttention = ({ data }: PayAttentionProps) => {
                 entity_code,
                 warning,
                 measured_at,
+                unit,
               }) => {
                 return (
                   <ListItem
                     key={id}
                     onClick={() => {
-                      setContext({ ...context, user_id, entity: entity_code })
+                      setContext({
+                        ...context,
+                        user_id,
+                        entity: entity_code,
+                        entity_code,
+                        entity_title,
+                        entity_unit: unit,
+                      })
                     }}
                   >
                     <div title={getTitle(warning)}>
