@@ -4,7 +4,7 @@ import { Upload, Download } from "@mui/icons-material"
 import { Link } from "react-router-dom"
 import { WarningEnum } from "../../types"
 import { useContext } from "react"
-import MeassurementContext from "../../context"
+import MeasurementContext from "../../context"
 export interface Warning {
   id: number
   entity_title: string
@@ -20,7 +20,7 @@ export interface PayAttentionProps {
 }
 
 const PayAttention = ({ data }: PayAttentionProps) => {
-  const [context, setContext] = useContext(MeassurementContext)
+  const [context, setContext] = useContext(MeasurementContext)
 
   const getTitle = (warning: string): string | undefined => {
     switch (warning) {

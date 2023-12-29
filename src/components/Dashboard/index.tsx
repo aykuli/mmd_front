@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from "react"
 import { Link, Navigate } from "react-router-dom"
 import { AxiosResponse } from "axios"
-import { Typography } from "@mui/material"
+import { Alert, Snackbar, Typography } from "@mui/material"
 
 import {
   Accordion,
@@ -12,10 +12,10 @@ import LastMeasurements, { LastDate } from "./LastMeasurements"
 import PayAttention, { Warning } from "./PayAttention"
 import axios from "../../services/api"
 import MeasurementContext from "../../context"
-import { FamilyMember } from "../../types"
+import { IFamilyMember } from "../../types"
 
 interface FamilyResponse {
-  users: FamilyMember[]
+  users: IFamilyMember[]
 }
 
 type LastMeasurementsType = { [id: number]: LastDate[] }
@@ -29,9 +29,16 @@ const Dashboard = () => {
   const [warningMeasurements, setWarningMeasurements] =
     useState<WarningMeasurementsType | null>(null)
   const [isMeasuresLoading, setIsMeasuresLoading] = useState<boolean>(false)
-  const [family, setFamily] = useState<FamilyMember[]>([])
+  const [family, setFamily] = useState<IFamilyMember[]>([])
   const [isFamilyLoading, setIsFamilyLoading] = useState<boolean>(false)
   const [expanded, setExpanded] = useState<number | null>(0)
+
+  const saveParent = (users: IFamilyMember[]) => {
+    const parent = users.find((user) => user.parent_id != null)
+    if (parent) {
+      setContext({ ...context, parent_id: parent.id })
+    }
+  }
 
   const fetchFamily = async () => {
     setIsFamilyLoading(true)
@@ -41,7 +48,9 @@ const Dashboard = () => {
       ).post(`${String(process.env.REACT_APP_DOMAIN)}/api/v1/family`)
       const users = familyData.data.users
       setFamily(users)
+      saveParent(users)
 
+      setContext({ ...context, users })
       users.forEach(({ id }) => {
         fetchLastMeasurements(id)
         fetchWarningMeasurements(id)
@@ -96,6 +105,17 @@ const Dashboard = () => {
 
   return (
     <div>
+      {context.alert_message && (
+        <Snackbar
+          open={!!context.alert_message}
+          autoHideDuration={4000}
+          onClose={() =>
+            setContext({ ...context, alert_type: "", alert_message: "" })
+          }
+        >
+          <Alert severity={context.alert_type}>{context.alert_message}</Alert>
+        </Snackbar>
+      )}
       {!context.token && <Navigate to="/" replace />}
       {isFamilyLoading && "Request is ongoing..."}
       {family.map(({ id, first_name, member }, index) => {

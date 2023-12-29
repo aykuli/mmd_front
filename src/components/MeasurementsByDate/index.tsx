@@ -4,7 +4,7 @@ import { AxiosResponse } from "axios"
 import { Typography } from "@mui/material"
 
 import Group from "./Group"
-import MeassurementContext from "../../context"
+import MeasurementContext from "../../context"
 import {
   IMeasurement,
   IMeasurementInList,
@@ -19,7 +19,7 @@ interface IGroup {
 }
 
 const MeasurementsByDate = () => {
-  const [context] = useContext(MeassurementContext)
+  const [context] = useContext(MeasurementContext)
 
   const [expanded, setExpanded] = useState<number | null>(0)
   const [groups, setGroups] = useState<IGroup[]>([])

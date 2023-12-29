@@ -44,16 +44,15 @@ const WelcomePage = () => {
     setIsSent(true)
 
     try {
-      const res: AxiosResponse<{ token: string }> = await axios(
-        context.token
-      ).get(
-        `${String(
-          process.env.REACT_APP_DOMAIN
-        )}/api/v1/login?email=${email}&password=${password}`
-      )
-      const { token } = res.data
+      const res: AxiosResponse<{ token: string; user_id: number }> =
+        await axios(context.token).get(
+          `${String(
+            process.env.REACT_APP_DOMAIN
+          )}/api/v1/login?email=${email}&password=${password}`
+        )
+      const { token, user_id } = res.data
       if (token) {
-        setContext({ token })
+        setContext({ token, parent_id: user_id })
         setIsRedirect(true)
       }
     } catch (e) {

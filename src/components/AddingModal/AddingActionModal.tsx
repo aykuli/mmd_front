@@ -47,32 +47,26 @@ const AddingActionModal = () => {
 
       <Dialog onClose={() => setOpen(false)} open={open && !modalType}>
         <DialogTitle>Добавить</DialogTitle>
-        <DialogContent dividers>
-          <List>
-            <ListItem disablePadding>
-              <ListItemButton
-                onClick={() => {
-                  setModalType("person")
-                }}
-              >
-                <ListItemIcon>
-                  <Add />
-                </ListItemIcon>
-                <ListItemText primary="человека" />
-              </ListItemButton>
-            </ListItem>
-            <ListItem disablePadding>
-              <ListItemButton
-                onClick={() => {
-                  setModalType("measurement")
-                }}
-              >
-                <ListItemIcon>
-                  <Add />
-                </ListItemIcon>
-                <ListItemText primary="анализ" />
-              </ListItemButton>
-            </ListItem>
+        <DialogContent>
+          <List disablePadding>
+            {[
+              { type: "measurement", text: "анализ" },
+              { type: "person", text: "человека" },
+            ].map(({ type, text }) => {
+              return (
+                <ListItem key={type}>
+                  <ListItemButton
+                    disableGutters
+                    onClick={() => setModalType(type as ModalType)}
+                  >
+                    <ListItemIcon>
+                      <Add />
+                    </ListItemIcon>
+                    <ListItemText primary={text} />
+                  </ListItemButton>
+                </ListItem>
+              )
+            })}
           </List>
         </DialogContent>
       </Dialog>

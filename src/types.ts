@@ -28,10 +28,11 @@ export interface Entity {
   title: string
 }
 
-export interface FamilyMember {
+export interface IFamilyMember {
   id: number
   first_name: string
   member: string
+  parent_id: null | number
 }
 
 export enum WarningEnum {
@@ -56,4 +57,17 @@ export interface IMeasurementInList {
 
 export interface IGroupedMeasurement {
   [key: string]: IMeasurementInList[]
+}
+
+export interface IEntity {
+  id: number
+  code: string
+  title: string
+  alias: string
+  max: number
+  min: number
+  unit: string
+  description: string
+  gender: string
+  group_id: number
 }

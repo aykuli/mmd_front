@@ -1,4 +1,5 @@
 import { createContext } from "react"
+import { IFamilyMember } from "../types"
 export interface IMeasurementContext {
   entity_code: string | null
   entity_unit: string | null
@@ -6,6 +7,10 @@ export interface IMeasurementContext {
   measured_at: Date | null
   user_id: number | null
   token: string | null
+  parent_id: number | null
+  users: IFamilyMember[] | null
+  alert_message: string
+  alert_type: string
 }
 const contextInitValue: IMeasurementContext = {
   entity_code: null,
@@ -14,12 +19,16 @@ const contextInitValue: IMeasurementContext = {
   measured_at: null,
   user_id: null,
   token: null,
+  parent_id: null,
+  users: null,
+  alert_message: "",
+  alert_type: "",
 }
 const setContext: any = (context: IMeasurementContext) => {
   return context
 }
-const MeassurementContext = createContext([contextInitValue, setContext])
+const MeasurementContext = createContext([contextInitValue, setContext])
 
-export default MeassurementContext
+export default MeasurementContext
 
 export { contextInitValue }
