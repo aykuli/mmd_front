@@ -67,9 +67,10 @@ const AddPersonModal = ({ open, setOpen }: AddPersonProps) => {
   const [isSaving, setIsSaving] = useState<boolean>(false)
   const [error, setError] = useState<string>("")
 
-  useEffect(() => {
-    setPersonData({ ...personData, parent_id: context.parent_id })
-  }, [context.parent_id])
+  useEffect(
+    () => setPersonData({ ...personData, parent_id: context.parent_id }),
+    [context.parent_id]
+  )
 
   const savePerson = async () => {
     try {
