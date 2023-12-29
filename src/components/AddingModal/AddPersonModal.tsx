@@ -28,39 +28,39 @@ interface AddPersonProps {
 }
 interface IPerson {
   email: string
-  firstName: string
-  lastName: string
+  first_name: string
+  last_name: string
   gender: string
   parent_id: number
   member: string
-  birthDate: string | number | Date | dayjs.Dayjs | null | undefined
+  birth_date: string | number | Date | dayjs.Dayjs | null | undefined
 }
 
 const members = ["мама", "папа", "брат", "сестра", "дочь", "сын"]
 const initPerson: IPerson = {
   email: "",
-  firstName: "",
-  lastName: "",
+  first_name: "",
+  last_name: "",
   gender: "",
   parent_id: 0,
   member: "",
-  birthDate: "",
+  birth_date: "",
 }
 
 const prepare = (personData: IPerson) => {
   return {
     email: personData.email,
-    firstName: personData.firstName,
-    lastName: personData.lastName,
+    first_name: personData.first_name,
+    last_name: personData.last_name,
     gender: personData.gender,
     parent_id: personData.parent_id,
     member: personData.member,
-    birthDate: dayjs(personData.birthDate).format("YYYY-MM-DD"),
+    birth_date: dayjs(personData.birth_date).format("YYYY-MM-DD"),
   }
 }
 
 const AddPersonModal = ({ open, setOpen }: AddPersonProps) => {
-  const [context] = useContext(MeasurementContext)
+  const [context, setContext] = useContext(MeasurementContext)
 
   const [personData, setPersonData] = useState<IPerson>(initPerson)
 
@@ -68,13 +68,7 @@ const AddPersonModal = ({ open, setOpen }: AddPersonProps) => {
   const [error, setError] = useState<string>("")
 
   useEffect(() => {
-    setPersonData((prev) => {
-      return {
-        ...prev,
-        parent_id: context.parent_id,
-        birthDate: dayjs(Date.now()),
-      }
-    })
+    setPersonData({ ...personData, parent_id: context.parent_id })
   }, [context.parent_id])
 
   const savePerson = async () => {
@@ -82,18 +76,20 @@ const AddPersonModal = ({ open, setOpen }: AddPersonProps) => {
       setIsSaving(true)
       await axios(context.token).post(
         `${String(process.env.REACT_APP_DOMAIN)}/api/v1/users/add`,
-        {
-          person: prepare(personData),
-        }
+        prepare(personData)
       )
+      setContext({
+        ...context,
+        alert_message: "Успешно добавлен пользователь",
+        alert_type: "success",
+      })
+      setOpen(false)
     } catch (e) {
       setError("Попробуй еще раз. Что-то пошло не так.")
     } finally {
       setIsSaving(false)
     }
   }
-
-  console.log(personData)
 
   return (
     <Dialog fullScreen onClose={() => setOpen(false)} open={open}>
@@ -105,10 +101,10 @@ const AddPersonModal = ({ open, setOpen }: AddPersonProps) => {
           required
           id="first-name"
           label="Имя"
-          defaultValue={personData.firstName}
+          defaultValue={personData.first_name}
           onChange={(e) =>
             setPersonData((prev) => {
-              return { ...prev, firstName: e.target.value }
+              return { ...prev, first_name: e.target.value }
             })
           }
         />
@@ -117,10 +113,10 @@ const AddPersonModal = ({ open, setOpen }: AddPersonProps) => {
           margin="normal"
           id="last-name"
           label="Фамилия"
-          defaultValue={personData.lastName}
+          defaultValue={personData.last_name}
           onChange={(e) =>
             setPersonData((prev) => {
-              return { ...prev, lastName: e.target.value }
+              return { ...prev, last_name: e.target.value }
             })
           }
         />
@@ -141,11 +137,11 @@ const AddPersonModal = ({ open, setOpen }: AddPersonProps) => {
             <DemoContainer components={["DatePicker"]}>
               <DatePicker
                 label="Дата рождения*"
-                value={personData.birthDate}
+                value={personData.birth_date}
                 onChange={(e) =>
                   setPersonData({
                     ...personData,
-                    birthDate: dayjs(e),
+                    birth_date: dayjs(e),
                   })
                 }
               />

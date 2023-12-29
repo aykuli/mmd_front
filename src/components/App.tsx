@@ -11,7 +11,6 @@ import AddingAction from "./AddingModal/AddingActionModal"
 
 const App = ({ children }: { children: ReactElement }) => {
   const [context, setContext] = useState(contextInitValue)
-  console.log(context)
 
   return (
     <ThemeProvider theme={theme}>

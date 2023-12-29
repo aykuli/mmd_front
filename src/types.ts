@@ -58,3 +58,16 @@ export interface IMeasurementInList {
 export interface IGroupedMeasurement {
   [key: string]: IMeasurementInList[]
 }
+
+export interface IEntity {
+  id: number
+  code: string
+  title: string
+  alias: string
+  max: number
+  min: number
+  unit: string
+  description: string
+  gender: string
+  group_id: number
+}

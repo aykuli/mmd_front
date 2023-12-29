@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from "react"
 import { Link, Navigate } from "react-router-dom"
 import { AxiosResponse } from "axios"
-import { Typography } from "@mui/material"
+import { Alert, Snackbar, Typography } from "@mui/material"
 
 import {
   Accordion,
@@ -50,6 +50,7 @@ const Dashboard = () => {
       setFamily(users)
       saveParent(users)
 
+      setContext({ ...context, users })
       users.forEach(({ id }) => {
         fetchLastMeasurements(id)
         fetchWarningMeasurements(id)
@@ -104,6 +105,17 @@ const Dashboard = () => {
 
   return (
     <div>
+      {context.alert_message && (
+        <Snackbar
+          open={!!context.alert_message}
+          autoHideDuration={4000}
+          onClose={() =>
+            setContext({ ...context, alert_type: "", alert_message: "" })
+          }
+        >
+          <Alert severity={context.alert_type}>{context.alert_message}</Alert>
+        </Snackbar>
+      )}
       {!context.token && <Navigate to="/" replace />}
       {isFamilyLoading && "Request is ongoing..."}
       {family.map(({ id, first_name, member }, index) => {
