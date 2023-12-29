@@ -4,17 +4,18 @@ import { ThemeProvider } from "@mui/material/styles"
 import { GraphicEq } from "@mui/icons-material"
 
 import Logout from "./Logout"
-import MeassurementContext, { contextInitValue } from "../context"
+import MeasurementContext, { contextInitValue } from "../context"
 import theme, { headerStyle, welcomeStyle } from "../ui/theme"
 import "../assets/App.css"
 import AddingAction from "./AddingModal/AddingActionModal"
 
 const App = ({ children }: { children: ReactElement }) => {
   const [context, setContext] = useState(contextInitValue)
+  console.log(context)
 
   return (
     <ThemeProvider theme={theme}>
-      <MeassurementContext.Provider value={[context, setContext]}>
+      <MeasurementContext.Provider value={[context, setContext]}>
         <div className="App">
           <header
             className="App-header"
@@ -39,7 +40,7 @@ const App = ({ children }: { children: ReactElement }) => {
           </header>
           <div>{children}</div>
         </div>
-      </MeassurementContext.Provider>
+      </MeasurementContext.Provider>
     </ThemeProvider>
   )
 }

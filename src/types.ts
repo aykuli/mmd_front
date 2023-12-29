@@ -28,10 +28,11 @@ export interface Entity {
   title: string
 }
 
-export interface FamilyMember {
+export interface IFamilyMember {
   id: number
   first_name: string
   member: string
+  parent_id: null | number
 }
 
 export enum WarningEnum {

@@ -6,6 +6,7 @@ export interface IMeasurementContext {
   measured_at: Date | null
   user_id: number | null
   token: string | null
+  parent_id: number | null
 }
 const contextInitValue: IMeasurementContext = {
   entity_code: null,
@@ -14,12 +15,13 @@ const contextInitValue: IMeasurementContext = {
   measured_at: null,
   user_id: null,
   token: null,
+  parent_id: null,
 }
 const setContext: any = (context: IMeasurementContext) => {
   return context
 }
-const MeassurementContext = createContext([contextInitValue, setContext])
+const MeasurementContext = createContext([contextInitValue, setContext])
 
-export default MeassurementContext
+export default MeasurementContext
 
 export { contextInitValue }
