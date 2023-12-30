@@ -1,17 +1,16 @@
 import { useContext, useEffect, useState } from "react"
 import dayjs from "dayjs"
 import {
-  Autocomplete,
   Button,
   Dialog,
   DialogContent,
   DialogTitle,
   FormControl,
-  InputAdornment,
+  IconButton,
   InputLabel,
   MenuItem,
   Select,
-  TextField,
+  Typography,
 } from "@mui/material"
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
@@ -22,6 +21,8 @@ import MeasurementContext from "../../context"
 import axios from "../../services/api"
 import { IEntity, IUser } from "../../types"
 import { AxiosResponse } from "axios"
+import { Add, Close } from "@mui/icons-material"
+import Value from "./Value"
 
 interface IEntityResponse {
   entities: IEntity[]
@@ -33,9 +34,19 @@ interface AddMeasurementProps {
 
 interface IAddingMeasurement {
   user_id: number
-  entity_id: number | null
   measured_at: string | number | Date | dayjs.Dayjs | null | undefined
-  value: string
+}
+
+interface IValue {
+  value: string | null
+  entity: null | IEntity
+  unit: string | null
+}
+
+const initValue: IValue = {
+  value: "",
+  entity: null,
+  unit: "",
 }
 
 const AddMeasurementModal = ({ open, setOpen }: AddMeasurementProps) => {
@@ -43,13 +54,12 @@ const AddMeasurementModal = ({ open, setOpen }: AddMeasurementProps) => {
 
   const [measurement, setMeasurement] = useState<IAddingMeasurement>({
     user_id: context.users[0].id,
-    entity_id: null,
     measured_at: dayjs(Date.now()),
-    value: "",
   })
 
+  const [values, setValues] = useState<IValue[]>([initValue])
+
   const [entities, setEntities] = useState<IEntity[]>([])
-  const [entity, setEntity] = useState<IEntity | null>(null)
   const [user, setUser] = useState<IUser>(context.users[0])
   const [isSaving, setIsSaving] = useState<boolean>(false)
   const [isFetchingEntities, setIsFetchingEntities] = useState<boolean>(false)
@@ -73,12 +83,15 @@ const AddMeasurementModal = ({ open, setOpen }: AddMeasurementProps) => {
     fetchEntities()
   }, [])
 
-  const save = async () => {
+  const saveOneValue = async (oneValue: {
+    value: string
+    entity_id: number
+  }) => {
     setIsSaving(true)
     try {
       await axios(context.token).post(
         `${String(process.env.REACT_APP_DOMAIN)}/api/v1/measurements/add`,
-        measurement
+        { ...measurement, ...oneValue }
       )
       setContext({
         ...context,
@@ -86,7 +99,6 @@ const AddMeasurementModal = ({ open, setOpen }: AddMeasurementProps) => {
         alert_type: "success",
         expandedUserId: user.id,
       })
-      setOpen(false)
     } catch (e) {
       console.error(e)
     } finally {
@@ -94,9 +106,31 @@ const AddMeasurementModal = ({ open, setOpen }: AddMeasurementProps) => {
     }
   }
 
+  const save = () => {
+    values.forEach(({ value, entity }) => {
+      saveOneValue({
+        value: value as string,
+        entity_id: (entity as IEntity).id,
+      })
+    })
+  }
+
   return (
     <Dialog fullScreen onClose={() => setOpen(false)} open={open}>
-      <DialogTitle>Добавление анализа</DialogTitle>
+      <DialogTitle>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Typography variant="h5">Добавление анализа</Typography>
+          <IconButton onClick={() => setOpen(false)}>
+            <Close />
+          </IconButton>
+        </div>
+      </DialogTitle>
       <DialogContent dividers>
         <FormControl fullWidth>
           <InputLabel id="person">Чьи анализы?</InputLabel>
@@ -107,7 +141,6 @@ const AddMeasurementModal = ({ open, setOpen }: AddMeasurementProps) => {
             defaultValue={measurement.user_id}
             label="Чьи анализы? *"
             onChange={(e) => {
-              console.log(e)
               setMeasurement({
                 ...measurement,
                 user_id: e.target.value as number,
@@ -127,36 +160,7 @@ const AddMeasurementModal = ({ open, setOpen }: AddMeasurementProps) => {
           </Select>
         </FormControl>
 
-        <div style={{ marginBottom: 16, marginTop: 16 }}>
-          <Autocomplete
-            disablePortal
-            freeSolo
-            id="member"
-            options={entities}
-            getOptionLabel={(option) => (option as IEntity).title}
-            value={entity}
-            sx={{ width: 300 }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Выберите тип анализа *"
-                onChange={(e) => {
-                  console.log("777", e.target.value)
-                  console.log(params)
-                }}
-              />
-            )}
-            onChange={(e, value) => {
-              setEntity(value as IEntity)
-              setMeasurement({
-                ...measurement,
-                entity_id: (value as IEntity).id,
-              })
-            }}
-          />
-        </div>
-
-        <div style={{ marginBottom: 16 }}>
+        <div style={{ marginBottom: 16, marginTop: 12 }}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DemoContainer components={["DatePicker"]}>
               <DatePicker
@@ -172,23 +176,43 @@ const AddMeasurementModal = ({ open, setOpen }: AddMeasurementProps) => {
             </DemoContainer>
           </LocalizationProvider>
         </div>
-
-        <FormControl fullWidth>
-          <TextField
-            id="value"
-            label="Результат измерения *"
-            variant="outlined"
-            onChange={(e) => {
-              setMeasurement({ ...measurement, value: e.target.value })
-            }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">{entity?.unit}</InputAdornment>
-              ),
-            }}
-          />
-        </FormControl>
+        {values.map(({ value, entity, unit }, index) => {
+          return (
+            <>
+              <div
+                style={{
+                  width: "100%",
+                  height: 1,
+                  backgroundColor: "#dddddd",
+                  marginTop: 16,
+                }}
+              />
+              <Value
+                {...{ value, entity, entities, unit }}
+                onEntityChange={(newEntity) => {
+                  setValues((prev) => {
+                    prev[index].entity = newEntity
+                    return prev
+                  })
+                }}
+                onValueChange={(newValue) => {
+                  const newValues = JSON.parse(JSON.stringify(values))
+                  newValues[index] = { ...newValues[index], value: newValue }
+                  setValues(newValues)
+                }}
+              />
+            </>
+          )
+        })}
       </DialogContent>
+
+      <IconButton
+        onClick={() => {
+          setValues([...values, initValue])
+        }}
+      >
+        <Add />
+      </IconButton>
 
       <DialogContent dividers>
         <Button

@@ -10,10 +10,13 @@ import {
   FormControl,
   FormControlLabel,
   FormLabel,
+  IconButton,
   Radio,
   RadioGroup,
   TextField,
+  Typography,
 } from "@mui/material"
+import { Close } from "@mui/icons-material"
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
@@ -98,7 +101,20 @@ const AddPersonModal = ({ open, setOpen }: AddPersonProps) => {
 
   return (
     <Dialog fullScreen onClose={() => setOpen(false)} open={open}>
-      <DialogTitle>Добавление человека</DialogTitle>
+      <DialogTitle>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Typography variant="h5">Добавление человека</Typography>
+          <IconButton onClick={() => setOpen(false)}>
+            <Close />
+          </IconButton>
+        </div>
+      </DialogTitle>
       <DialogContent dividers>
         {error && <Alert severity="error">{error}</Alert>}
         <TextField

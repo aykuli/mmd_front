@@ -7,12 +7,14 @@ import {
   FormControl,
   FormControlLabel,
   FormLabel,
+  IconButton,
   InputLabel,
   MenuItem,
   Radio,
   RadioGroup,
   Select,
   TextField,
+  Typography,
 } from "@mui/material"
 import { TextareaAutosize as BaseTextareaAutosize } from "@mui/base"
 import { styled } from "@mui/system"
@@ -21,6 +23,7 @@ import MeasurementContext from "../../context"
 import axios from "../../services/api"
 import { IEntity, IEntityGroup } from "../../types"
 import { AxiosResponse } from "axios"
+import { Close } from "@mui/icons-material"
 
 const blue = {
   100: "#DAECFF",
@@ -140,11 +143,23 @@ const AddEntityModal = ({ open, setOpen }: AddEntityProps) => {
       setIsSaving(false)
     }
   }
-  console.log(entity)
 
   return (
     <Dialog fullScreen onClose={() => setOpen(false)} open={open}>
-      <DialogTitle>Новый тип анализа</DialogTitle>
+      <DialogTitle>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Typography variant="h5">Новый тип анализа</Typography>
+          <IconButton onClick={() => setOpen(false)}>
+            <Close />
+          </IconButton>
+        </div>
+      </DialogTitle>
       <DialogContent dividers>
         <FormControl fullWidth>
           <InputLabel id="person">Группа анализа</InputLabel>
