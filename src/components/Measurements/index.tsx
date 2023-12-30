@@ -18,6 +18,7 @@ const Measurements = () => {
 
   const [measurements, setMeasurements] = useState<IGroupedMeasurement>({})
   const [isMeasuresLoading, setIsMeasuresLoading] = useState<boolean>(false)
+  const [refresh, setRefresh] = useState<boolean>(false)
   const [expanded, setExpanded] = useState<string | null>(null)
 
   const fetchMeasurements = async (user_id: number) => {
@@ -41,7 +42,7 @@ const Measurements = () => {
 
   useEffect(() => {
     fetchMeasurements(context.user_id)
-  }, [context.user_id])
+  }, [context.user_id, refresh])
 
   return (
     <>
@@ -67,7 +68,10 @@ const Measurements = () => {
             <AccordionDetails>
               <p>{isMeasuresLoading ? "Loading data" : ""} </p>
 
-              <MeasurementsList measurements={measurements[key]} />
+              <MeasurementsList
+                measurements={measurements[key]}
+                setRefresh={setRefresh}
+              />
             </AccordionDetails>
           </Accordion>
         )
