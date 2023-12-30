@@ -5,7 +5,13 @@ const createAxiosInstance = (token: string | null): AxiosInstance => {
   const axiosInstance = axios.create({
     withCredentials: !!token,
     responseType: "json",
-    headers: { "Accept-Language": "ru", ...authorization },
+    headers: {
+      "Accept-Language": "ru",
+      // "Access-Control-Allow-Origin": "https://mymeddata.ru",
+      "Access-Control-Allow-Methods": "POST, GET, OPTIONS, DELETE",
+      "Access-Control-Allow-Origin": "http://localhost:3001",
+      ...authorization,
+    },
     timeout: 30000,
   })
   axiosInstance.interceptors.response.use(

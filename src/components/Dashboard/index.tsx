@@ -12,10 +12,10 @@ import LastMeasurements, { LastDate } from "./LastMeasurements"
 import PayAttention, { Warning } from "./PayAttention"
 import axios from "../../services/api"
 import MeasurementContext from "../../context"
-import { IFamilyMember } from "../../types"
+import { IUser } from "../../types"
 
 interface FamilyResponse {
-  users: IFamilyMember[]
+  users: IUser[]
 }
 
 type LastMeasurementsType = { [id: number]: LastDate[] }
@@ -29,11 +29,10 @@ const Dashboard = () => {
   const [warningMeasurements, setWarningMeasurements] =
     useState<WarningMeasurementsType | null>(null)
   const [isMeasuresLoading, setIsMeasuresLoading] = useState<boolean>(false)
-  const [family, setFamily] = useState<IFamilyMember[]>([])
+  const [family, setFamily] = useState<IUser[]>([])
   const [isFamilyLoading, setIsFamilyLoading] = useState<boolean>(false)
-  const [expanded, setExpanded] = useState<number | null>(0)
 
-  const saveParent = (users: IFamilyMember[]) => {
+  const saveParent = (users: IUser[]) => {
     const parent = users.find((user) => user.parent_id != null)
     if (parent) {
       setContext({ ...context, parent_id: parent.id })
@@ -101,7 +100,9 @@ const Dashboard = () => {
 
   useEffect(() => {
     fetchFamily()
-  }, [])
+  }, [context.alert_message])
+
+  console.log(context)
 
   return (
     <div>
@@ -122,8 +123,13 @@ const Dashboard = () => {
         return (
           <Accordion
             key={id}
-            expanded={expanded === index}
-            onChange={() => setExpanded(expanded === index ? null : index)}
+            expanded={context.expandedUserId === id}
+            onChange={() => {
+              setContext({
+                ...context,
+                expandedUserId: id === context.expandedUserId ? null : id,
+              })
+            }}
           >
             <AccordionSummary aria-controls={first_name} id={String(id)}>
               <div

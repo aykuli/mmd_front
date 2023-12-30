@@ -16,10 +16,13 @@ interface LastMeasurementsProps {
 
 const LastMeasurements = ({ data }: LastMeasurementsProps) => {
   const [context, setContext] = useContext(MeasurementContext)
+  const message = data.length
+    ? "Последние измерения:"
+    : "Добавьте ваши измерения (выше в шапке)"
 
   return (
     <>
-      <Typography align="left">Последние измерения:</Typography>
+      <Typography align="left">{message}</Typography>
       <List dense>
         {data
           ? data.map(({ id, user_id, measured_at }) => {

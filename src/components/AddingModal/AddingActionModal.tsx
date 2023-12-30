@@ -13,6 +13,7 @@ import {
 } from "@mui/material"
 import AddPersonModal from "./AddPersonModal"
 import AddMeasurementModal from "./AddMeasurementModal"
+import AddEntityModal from "./AddEntityModal"
 
 type ModalType = "person" | "entity" | "measurement"
 
@@ -44,6 +45,15 @@ const AddingActionModal = () => {
           }}
         />
       )}
+      {modalType === "entity" && (
+        <AddEntityModal
+          open={open}
+          setOpen={(boolValue: boolean) => {
+            setOpen(boolValue)
+            setModalType(null)
+          }}
+        />
+      )}
 
       <Dialog onClose={() => setOpen(false)} open={open && !modalType}>
         <DialogTitle>Добавить</DialogTitle>
@@ -51,6 +61,7 @@ const AddingActionModal = () => {
           <List disablePadding>
             {[
               { type: "measurement", text: "анализ" },
+              { type: "entity", text: "тип анализа" },
               { type: "person", text: "человека" },
             ].map(({ type, text }) => {
               return (

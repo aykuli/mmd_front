@@ -21,6 +21,8 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker"
 
 import MeasurementContext from "../../context"
 import axios from "../../services/api"
+import { IUser } from "../../types"
+import { AxiosResponse } from "axios"
 
 interface AddPersonProps {
   open: boolean
@@ -75,14 +77,16 @@ const AddPersonModal = ({ open, setOpen }: AddPersonProps) => {
   const savePerson = async () => {
     try {
       setIsSaving(true)
-      await axios(context.token).post(
+      const newUser: AxiosResponse<IUser> = await axios(context.token).post(
         `${String(process.env.REACT_APP_DOMAIN)}/api/v1/users/add`,
         prepare(personData)
       )
+
       setContext({
         ...context,
         alert_message: "Успешно добавлен пользователь",
         alert_type: "success",
+        expandedUserId: newUser.data.id,
       })
       setOpen(false)
     } catch (e) {
