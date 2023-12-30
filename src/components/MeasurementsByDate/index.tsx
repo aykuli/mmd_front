@@ -28,6 +28,7 @@ const MeasurementsByDate = () => {
     null
   )
   const [isMeasuresLoading, setIsMeasuresLoading] = useState<boolean>(false)
+  const [refresh, setRefresh] = useState<boolean>(false)
 
   const groupMeasurement = (
     measurements: IMeasurement[]
@@ -93,7 +94,7 @@ const MeasurementsByDate = () => {
 
   useEffect(() => {
     fetchMeasurements()
-  }, [])
+  }, [refresh])
 
   return (
     <div>
@@ -116,6 +117,7 @@ const MeasurementsByDate = () => {
                     expanded,
                     setExpanded,
                     measurements: measurements ? measurements[code] : [],
+                    setRefresh,
                   }}
                 />
               )

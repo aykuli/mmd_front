@@ -15,19 +15,45 @@ import { pink } from "@mui/material/colors"
 import MeasurementContext from "../../context"
 import { IMeasurementInList, WarningEnum } from "../../types"
 
-import { Comment, Upload, Download, QueryStats } from "@mui/icons-material"
+import {
+  Comment,
+  Upload,
+  Download,
+  QueryStats,
+  Clear,
+} from "@mui/icons-material"
+import axios from "../../services/api"
 
 interface MeasurementsProps {
   measurements: IMeasurementInList[]
+  setRefresh: any
 }
 
-const Measurements = ({ measurements }: MeasurementsProps) => {
+const Measurements = ({ measurements, setRefresh }: MeasurementsProps) => {
   const [context, setContext] = useContext(MeasurementContext)
   const [descriptionIndex, setDescriptionIndex] = useState<number | null>(null)
+  const [isDeleting, setIsDeleting] = useState<boolean>(false)
+
+  const deleteMeasurement = async (id: number) => {
+    try {
+      setIsDeleting(true)
+      await axios(context.token).post(
+        `${String(process.env.REACT_APP_DOMAIN)}/api/v1/measurements/delete`,
+        {
+          id,
+        }
+      )
+    } catch (e) {
+      console.error(e)
+    } finally {
+      setRefresh((prev: any) => !prev)
+      setIsDeleting(false)
+    }
+  }
 
   return (
     <List sx={{ width: "100%", bgcolor: "background.paper" }}>
-      {measurements.map(
+      {measurements?.map(
         (
           {
             id,
@@ -45,30 +71,44 @@ const Measurements = ({ measurements }: MeasurementsProps) => {
           index
         ) => (
           <li key={id} style={{ display: "block" }}>
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <Link
-                onClick={() =>
-                  setContext({
-                    ...context,
-                    entity: entity_code,
-                    measured_at: measured_at,
-                    entity_unit: unit,
-                    entity_code,
-                    entity_title,
-                    user_id,
-                  })
-                }
-                title="Посмотреть график всех измерений"
-                to={`/measurements/${entity_code}`}
-                style={{
-                  marginRight: 10,
-                }}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <Link
+                  onClick={() =>
+                    setContext({
+                      ...context,
+                      entity: entity_code,
+                      measured_at: measured_at,
+                      entity_unit: unit,
+                      entity_code,
+                      entity_title,
+                      user_id,
+                    })
+                  }
+                  title="Посмотреть график всех измерений"
+                  to={`/measurements/${entity_code}`}
+                  style={{
+                    marginRight: 10,
+                  }}
+                >
+                  <Avatar>
+                    <QueryStats />
+                  </Avatar>
+                </Link>
+                <Typography>{entity_title}</Typography>
+              </div>
+              <IconButton
+                onClick={() => deleteMeasurement(id)}
+                disabled={isDeleting}
               >
-                <Avatar>
-                  <QueryStats />
-                </Avatar>
-              </Link>
-              <Typography>{entity_title}</Typography>
+                <Clear />
+              </IconButton>
             </div>
             <div
               style={{
