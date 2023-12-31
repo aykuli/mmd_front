@@ -114,6 +114,8 @@ const Dashboard = () => {
 
   console.log(context)
 
+  console.log(context)
+
   return (
     <div>
       {context.alert_message && (
