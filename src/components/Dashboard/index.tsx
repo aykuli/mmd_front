@@ -1,7 +1,16 @@
 import { useEffect, useState, useContext } from "react"
 import { Link, Navigate } from "react-router-dom"
 import { AxiosResponse } from "axios"
-import { Alert, Snackbar, Typography } from "@mui/material"
+import {
+  Alert,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  List,
+  ListItem,
+  Snackbar,
+  Typography,
+} from "@mui/material"
 
 import {
   Accordion,
@@ -31,6 +40,7 @@ const Dashboard = () => {
   const [isMeasuresLoading, setIsMeasuresLoading] = useState<boolean>(false)
   const [family, setFamily] = useState<IUser[]>([])
   const [isFamilyLoading, setIsFamilyLoading] = useState<boolean>(false)
+  const [isOpenAllMeasurements, setIsOpen] = useState<boolean>(false)
 
   const saveParent = (users: IUser[]) => {
     const parent = users.find((user) => user.parent_id != null)
@@ -102,6 +112,8 @@ const Dashboard = () => {
     fetchFamily()
   }, [context.alert_message])
 
+  console.log(context)
+
   return (
     <div>
       {context.alert_message && (
@@ -126,6 +138,7 @@ const Dashboard = () => {
               setContext({
                 ...context,
                 expandedUserId: id === context.expandedUserId ? null : id,
+                user_id: id,
               })
             }}
           >
@@ -141,8 +154,8 @@ const Dashboard = () => {
                   member ? `${member} ` : ""
                 } ${first_name}`}</Typography>
 
-                <Link
-                  to="/measurements"
+                <Typography
+                  variant="body1"
                   onClick={() => {
                     setContext({
                       ...context,
@@ -152,10 +165,11 @@ const Dashboard = () => {
                       measured_at: null,
                       user_id: id,
                     })
+                    setIsOpen(true)
                   }}
                 >
                   Все измерения
-                </Link>
+                </Typography>
               </div>
             </AccordionSummary>
             <AccordionDetails>
@@ -172,6 +186,20 @@ const Dashboard = () => {
           </Accordion>
         )
       })}
+
+      <Dialog open={isOpenAllMeasurements} onClose={() => setIsOpen(false)}>
+        <DialogTitle>Сгруппировать по:</DialogTitle>
+        <DialogContent dividers>
+          <List>
+            <ListItem style={{ padding: "20px 10px" }}>
+              <Link to="/measurements/by_date">датам</Link>
+            </ListItem>
+            <ListItem style={{ padding: "20px 10px" }}>
+              <Link to="/measurements/by_entity">анализам</Link>
+            </ListItem>
+          </List>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
