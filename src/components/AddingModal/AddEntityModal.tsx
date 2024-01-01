@@ -231,10 +231,10 @@ const AddEntityModal = ({ open, setOpen }: AddEntityProps) => {
           fullWidth
           required
           id="unit"
-          label="Максимальное референсное значение"
+          label="Минимальное референсное значение"
           defaultValue={entity.max}
           onChange={(e) =>
-            setEntity({ ...entity, max: Number(e.target.value) })
+            setEntity({ ...entity, min: Number(e.target.value) })
           }
         />
 
@@ -243,10 +243,10 @@ const AddEntityModal = ({ open, setOpen }: AddEntityProps) => {
             fullWidth
             required
             id="unit"
-            label="Минимальное референсное значение"
+            label="Максимальное референсное значение"
             defaultValue={entity.max}
             onChange={(e) =>
-              setEntity({ ...entity, min: Number(e.target.value) })
+              setEntity({ ...entity, max: Number(e.target.value) })
             }
           />
         </div>
