@@ -110,7 +110,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     fetchFamily()
-  }, [context.alert_message])
+  }, [])
 
   console.log(context)
 

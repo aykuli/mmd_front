@@ -34,7 +34,7 @@ const Group = ({
       onChange={() => setExpanded(expanded === index ? null : index)}
     >
       <AccordionSummary aria-controls={title} id={code}>
-        <Typography>{title}</Typography>
+        <Typography align="left">{title}</Typography>
       </AccordionSummary>
       <AccordionDetails>
         <Measurements {...{ measurements, setRefresh }} />
