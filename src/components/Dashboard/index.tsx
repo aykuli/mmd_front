@@ -112,8 +112,6 @@ const Dashboard = () => {
     fetchFamily()
   }, [])
 
-  console.log(context)
-
   return (
     <div>
       {context.alert_message && (
@@ -129,7 +127,7 @@ const Dashboard = () => {
       )}
       {!context.token && <Navigate to="/" replace />}
       {isFamilyLoading && "Request is ongoing..."}
-      {family.map(({ id, first_name, member }, index) => {
+      {family.map(({ id, first_name, member }) => {
         return (
           <Accordion
             key={id}
@@ -156,7 +154,8 @@ const Dashboard = () => {
 
                 <Typography
                   variant="body1"
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.preventDefault()
                     setContext({
                       ...context,
                       entity_code: null,
@@ -192,10 +191,10 @@ const Dashboard = () => {
         <DialogContent dividers>
           <List>
             <ListItem style={{ padding: "20px 10px" }}>
-              <Link to="/measurements/by_date">датам</Link>
+              <Link to="/measurements/all">датам</Link>
             </ListItem>
             <ListItem style={{ padding: "20px 10px" }}>
-              <Link to="/measurements/by_entity">анализам</Link>
+              <Link to="/entities/all">анализам</Link>
             </ListItem>
           </List>
         </DialogContent>

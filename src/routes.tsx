@@ -6,6 +6,7 @@ import Chart from "./components/Chart"
 import MeasurementsByDate from "./components/MeasurementsByDate"
 import WelcomePage from "./components/WelcomePage"
 import Measurements from "./components/Measurements"
+import Entities from "./components/Entities"
 
 const routes = createBrowserRouter([
   {
@@ -30,13 +31,13 @@ const routes = createBrowserRouter([
     errorElement: <WelcomePage />,
   },
   {
-    path: "measurements/by_date",
+    path: "measurements/all",
     element: <Measurements />,
     errorElement: <WelcomePage />,
   },
   {
-    path: "measurements/by_entity",
-    element: <Measurements />,
+    path: "entities/all",
+    element: <Entities />,
     errorElement: <WelcomePage />,
   },
 ])
