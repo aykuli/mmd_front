@@ -127,7 +127,7 @@ const Dashboard = () => {
       )}
       {!context.token && <Navigate to="/" replace />}
       {isFamilyLoading && "Request is ongoing..."}
-      {family.map(({ id, first_name, member }, index) => {
+      {family.map(({ id, first_name, member }) => {
         return (
           <Accordion
             key={id}
@@ -154,7 +154,8 @@ const Dashboard = () => {
 
                 <Typography
                   variant="body1"
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.preventDefault()
                     setContext({
                       ...context,
                       entity_code: null,

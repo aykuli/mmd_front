@@ -30,18 +30,22 @@ const Group = ({
   justTitles = false,
 }: GroupProps) => {
   return (
-    <Accordion
-      key={code}
-      expanded={expanded === index}
-      onChange={() => setExpanded(expanded === index ? null : index)}
-    >
-      <AccordionSummary aria-controls={title} id={code}>
-        <Typography align="left">{title}</Typography>
-      </AccordionSummary>
-      <AccordionDetails>
-        <Measurements {...{ measurements, setRefresh, justTitles }} />
-      </AccordionDetails>
-    </Accordion>
+    <>
+      {measurements?.length ? (
+        <Accordion
+          key={code}
+          expanded={expanded === index}
+          onChange={() => setExpanded(expanded === index ? null : index)}
+        >
+          <AccordionSummary aria-controls={title} id={code}>
+            <Typography align="left">{title}</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Measurements {...{ measurements, setRefresh, justTitles }} />
+          </AccordionDetails>
+        </Accordion>
+      ) : null}
+    </>
   )
 }
 
