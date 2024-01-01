@@ -26,10 +26,15 @@ import axios from "../../services/api"
 
 interface MeasurementsProps {
   measurements: IMeasurementInList[]
+  justTitles?: boolean
   setRefresh: any
 }
 
-const Measurements = ({ measurements, setRefresh }: MeasurementsProps) => {
+const Measurements = ({
+  measurements,
+  setRefresh,
+  justTitles = false,
+}: MeasurementsProps) => {
   const [context, setContext] = useContext(MeasurementContext)
   const [descriptionIndex, setDescriptionIndex] = useState<number | null>(null)
   const [isDeleting, setIsDeleting] = useState<boolean>(false)
@@ -105,73 +110,80 @@ const Measurements = ({ measurements, setRefresh }: MeasurementsProps) => {
                   {entity_title}
                 </Typography>
               </div>
-              <IconButton
-                onClick={() => deleteMeasurement(id)}
-                disabled={isDeleting}
-              >
-                <Clear />
-              </IconButton>
-            </div>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <div style={{ display: "flex", marginLeft: 50 }}>
-                <Typography
-                  variant="body1"
-                  align="left"
-                  style={{ marginRight: 10 }}
-                >{`${value} ${unit}`}</Typography>
-
-                {warning === WarningEnum.HIGH && (
-                  <Upload sx={{ color: pink[500] }} />
-                )}
-                {warning === WarningEnum.LOW && (
-                  <Download sx={{ color: pink[500] }} />
-                )}
-              </div>
+              {!justTitles && (
+                <IconButton
+                  onClick={() => deleteMeasurement(id)}
+                  disabled={isDeleting}
+                >
+                  <Clear />
+                </IconButton>
+              )}
             </div>
 
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <Typography
-                variant="body2"
-                align="right"
-              >{`Норма: ${max} - ${min} ${unit}`}</Typography>
-              <IconButton
-                aria-label="comment"
-                onClick={() => {
-                  if (descriptionIndex === index) {
-                    setDescriptionIndex(null)
-                  } else {
-                    setDescriptionIndex(index)
-                  }
-                }}
-              >
-                <Comment />
-              </IconButton>
-            </div>
+            {!justTitles && (
+              <>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <div style={{ display: "flex", marginLeft: 50 }}>
+                    <Typography
+                      variant="body1"
+                      align="left"
+                      style={{ marginRight: 10 }}
+                    >{`${value} ${unit}`}</Typography>
 
-            <Dialog
-              onClose={() => setDescriptionIndex(null)}
-              open={descriptionIndex === index}
-            >
-              <DialogTitle>{entity_title}</DialogTitle>
-              <DialogContent dividers>
-                <DialogContentText>{description}</DialogContentText>
-              </DialogContent>
-              <DialogContent dividers>
-                <DialogContentText>{`Рефересные значения: ${min} - ${max} ${unit}`}</DialogContentText>
-              </DialogContent>
-            </Dialog>
+                    {warning === WarningEnum.HIGH && (
+                      <Upload sx={{ color: pink[500] }} />
+                    )}
+                    {warning === WarningEnum.LOW && (
+                      <Download sx={{ color: pink[500] }} />
+                    )}
+                  </div>
+                </div>
+
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <Typography
+                    variant="body2"
+                    align="right"
+                  >{`Норма: ${max} - ${min} ${unit}`}</Typography>
+                  <IconButton
+                    aria-label="comment"
+                    onClick={() => {
+                      if (descriptionIndex === index) {
+                        setDescriptionIndex(null)
+                      } else {
+                        setDescriptionIndex(index)
+                      }
+                    }}
+                  >
+                    <Comment />
+                  </IconButton>
+                </div>
+
+                <Dialog
+                  onClose={() => setDescriptionIndex(null)}
+                  open={descriptionIndex === index}
+                >
+                  <DialogTitle>{entity_title}</DialogTitle>
+                  <DialogContent dividers>
+                    <DialogContentText>{description}</DialogContentText>
+                  </DialogContent>
+                  <DialogContent dividers>
+                    <DialogContentText>{`Рефересные значения: ${min} - ${max} ${unit}`}</DialogContentText>
+                  </DialogContent>
+                </Dialog>
+              </>
+            )}
           </li>
         )
       )}

@@ -29,7 +29,7 @@ const Measurements = () => {
         context.token
       ).post(
         `${String(process.env.REACT_APP_DOMAIN)}/api/v1/measurements/all`,
-        { user_id }
+        { user_id, grouped_by: "date" }
       )
 
       setMeasurements(res.data)
@@ -47,6 +47,8 @@ const Measurements = () => {
   return (
     <>
       {!context.token && <Navigate to="/" replace />}
+      {isMeasuresLoading && <p>Загружаются данные...</p>}
+
       {Object.keys(measurements).map((key) => {
         return (
           <Accordion
@@ -66,8 +68,6 @@ const Measurements = () => {
               </div>
             </AccordionSummary>
             <AccordionDetails>
-              <p>{isMeasuresLoading ? "Loading data" : ""} </p>
-
               <MeasurementsList
                 measurements={measurements[key]}
                 setRefresh={setRefresh}

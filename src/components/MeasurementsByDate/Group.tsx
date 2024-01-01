@@ -16,6 +16,7 @@ interface GroupProps {
   setExpanded: Dispatch<SetStateAction<number | null>>
   measurements: IMeasurementInList[]
   setRefresh: any
+  justTitles?: boolean
 }
 
 const Group = ({
@@ -26,6 +27,7 @@ const Group = ({
   setExpanded,
   measurements,
   setRefresh,
+  justTitles = false,
 }: GroupProps) => {
   return (
     <Accordion
@@ -37,7 +39,7 @@ const Group = ({
         <Typography align="left">{title}</Typography>
       </AccordionSummary>
       <AccordionDetails>
-        <Measurements {...{ measurements, setRefresh }} />
+        <Measurements {...{ measurements, setRefresh, justTitles }} />
       </AccordionDetails>
     </Accordion>
   )

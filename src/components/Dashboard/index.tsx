@@ -190,10 +190,10 @@ const Dashboard = () => {
         <DialogContent dividers>
           <List>
             <ListItem style={{ padding: "20px 10px" }}>
-              <Link to="/measurements/by_date">датам</Link>
+              <Link to="/measurements/all">датам</Link>
             </ListItem>
             <ListItem style={{ padding: "20px 10px" }}>
-              <Link to="/measurements/by_entity">анализам</Link>
+              <Link to="/entities/all">анализам</Link>
             </ListItem>
           </List>
         </DialogContent>
