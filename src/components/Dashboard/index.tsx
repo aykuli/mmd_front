@@ -112,10 +112,6 @@ const Dashboard = () => {
     fetchFamily()
   }, [])
 
-  console.log(context)
-
-  console.log(context)
-
   return (
     <div>
       {context.alert_message && (
