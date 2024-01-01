@@ -158,7 +158,7 @@ const Measurements = ({ measurements, setRefresh }: MeasurementsProps) => {
                 <DialogContentText>{description}</DialogContentText>
               </DialogContent>
               <DialogContent dividers>
-                <DialogContentText>{`Рефересные значения: ${max} - ${min}${unit}`}</DialogContentText>
+                <DialogContentText>{`Рефересные значения: ${min} - ${max} ${unit}`}</DialogContentText>
               </DialogContent>
             </Dialog>
           </li>
