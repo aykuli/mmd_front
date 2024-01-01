@@ -18,6 +18,16 @@ interface IGroup {
   precedence: number
 }
 
+const sortFunc = (a: IMeasurementInList, b: IMeasurementInList) => {
+  if (a.entity_title > b.entity_title) {
+    return 1
+  } else if (a.entity_title === b.entity_title) {
+    return 0
+  } else {
+    return -1
+  }
+}
+
 const MeasurementsByDate = () => {
   const [context] = useContext(MeasurementContext)
 
@@ -69,6 +79,7 @@ const MeasurementsByDate = () => {
       } else {
         result[group_code] = [localMeasurement]
       }
+      result[group_code].sort(sortFunc)
     })
 
     return result

@@ -155,7 +155,7 @@ const Measurements = ({
                   <Typography
                     variant="body2"
                     align="right"
-                  >{`Норма: ${max} - ${min} ${unit}`}</Typography>
+                  >{`Норма: ${min} - ${max} ${unit}`}</Typography>
                   <IconButton
                     aria-label="comment"
                     onClick={() => {
