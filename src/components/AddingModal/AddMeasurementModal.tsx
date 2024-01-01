@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react"
 import dayjs from "dayjs"
 import {
+  Alert,
   Button,
   Dialog,
   DialogContent,
@@ -10,6 +11,7 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Snackbar,
   Typography,
 } from "@mui/material"
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo"
@@ -63,6 +65,7 @@ const AddMeasurementModal = ({ open, setOpen }: AddMeasurementProps) => {
   const [user, setUser] = useState<IUser>(context.users[0])
   const [isSaving, setIsSaving] = useState<boolean>(false)
   const [isFetchingEntities, setIsFetchingEntities] = useState<boolean>(false)
+  const [error, setError] = useState<string>("")
 
   const fetchEntities = async () => {
     try {
@@ -83,15 +86,23 @@ const AddMeasurementModal = ({ open, setOpen }: AddMeasurementProps) => {
     fetchEntities()
   }, [])
 
-  const saveOneValue = async (oneValue: {
-    value: string
-    entity_id: number
-  }) => {
+  const saveOneValue = (oneValue: { value: string; entity_id: number }) =>
+    axios(context.token).post(
+      `${String(process.env.REACT_APP_DOMAIN)}/api/v1/measurements/add`,
+      { ...measurement, ...oneValue }
+    )
+
+  const save = async () => {
     setIsSaving(true)
+
     try {
-      await axios(context.token).post(
-        `${String(process.env.REACT_APP_DOMAIN)}/api/v1/measurements/add`,
-        { ...measurement, ...oneValue }
+      Promise.all(
+        values.map(({ value, entity }) => {
+          return saveOneValue({
+            value: value as string,
+            entity_id: (entity as IEntity).id,
+          })
+        })
       )
       setContext({
         ...context,
@@ -99,133 +110,141 @@ const AddMeasurementModal = ({ open, setOpen }: AddMeasurementProps) => {
         alert_type: "success",
         expandedUserId: user.id,
       })
+
+      setOpen(false)
     } catch (e) {
+      setError("Что-то пошло не так, попробуй отправить данные еще раз")
       console.error(e)
     } finally {
       setIsSaving(false)
     }
   }
 
-  const save = () => {
-    values.forEach(({ value, entity }) => {
-      saveOneValue({
-        value: value as string,
-        entity_id: (entity as IEntity).id,
-      })
-    })
-  }
-
   return (
-    <Dialog fullScreen onClose={() => setOpen(false)} open={open}>
-      <DialogTitle>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
+    <>
+      {error && (
+        <Snackbar
+          open={!!error}
+          autoHideDuration={4000}
+          onClose={() => setError("")}
         >
-          <Typography variant="h5">Добавление анализа</Typography>
-          <IconButton onClick={() => setOpen(false)}>
-            <Close />
-          </IconButton>
-        </div>
-      </DialogTitle>
-      <DialogContent dividers>
-        <FormControl fullWidth>
-          <InputLabel id="person">Чьи анализы?</InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={measurement.user_id}
-            defaultValue={measurement.user_id}
-            label="Чьи анализы? *"
-            onChange={(e) => {
-              setMeasurement({
-                ...measurement,
-                user_id: e.target.value as number,
-              })
-              setUser(context.users.find((u: IUser) => u.id === e.target.value))
+          <Alert severity="error">{error}</Alert>
+        </Snackbar>
+      )}
+      {isFetchingEntities && <p>Загружаю типы анализов...</p>}
+      <Dialog fullScreen onClose={() => setOpen(false)} open={open}>
+        <DialogTitle>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
             }}
           >
-            {context.users.map((userOption: IUser) => {
-              return (
-                <MenuItem key={userOption.id} value={userOption.id}>{`${
-                  userOption.first_name
-                } ${
-                  userOption.member ? `(${userOption.member})` : ""
-                }`}</MenuItem>
-              )
-            })}
-          </Select>
-        </FormControl>
+            <Typography variant="h5">Добавление анализа</Typography>
+            <IconButton onClick={() => setOpen(false)}>
+              <Close />
+            </IconButton>
+          </div>
+        </DialogTitle>
+        <DialogContent dividers>
+          <FormControl fullWidth>
+            <InputLabel id="person">Чьи анализы?</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={measurement.user_id}
+              defaultValue={measurement.user_id}
+              label="Чьи анализы? *"
+              onChange={(e) => {
+                setMeasurement({
+                  ...measurement,
+                  user_id: e.target.value as number,
+                })
+                setUser(
+                  context.users.find((u: IUser) => u.id === e.target.value)
+                )
+              }}
+            >
+              {context.users.map((userOption: IUser) => {
+                return (
+                  <MenuItem key={userOption.id} value={userOption.id}>{`${
+                    userOption.first_name
+                  } ${
+                    userOption.member ? `(${userOption.member})` : ""
+                  }`}</MenuItem>
+                )
+              })}
+            </Select>
+          </FormControl>
 
-        <div style={{ marginBottom: 16, marginTop: 12 }}>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DemoContainer components={["DatePicker"]}>
-              <DatePicker
-                label="Дата измерения *"
-                value={measurement.measured_at}
-                onChange={(e) =>
-                  setMeasurement({
-                    ...measurement,
-                    measured_at: dayjs(e),
-                  })
-                }
-              />
-            </DemoContainer>
-          </LocalizationProvider>
-        </div>
-        {values.map(({ value, entity, unit }, index) => {
-          return (
-            <>
-              <div
-                style={{
-                  width: "100%",
-                  height: 1,
-                  backgroundColor: "#dddddd",
-                  marginTop: 16,
-                }}
-              />
-              <Value
-                {...{ value, entity, entities, unit }}
-                onEntityChange={(newEntity) => {
-                  setValues((prev) => {
-                    prev[index].entity = newEntity
-                    return prev
-                  })
-                }}
-                onValueChange={(newValue) => {
-                  const newValues = JSON.parse(JSON.stringify(values))
-                  newValues[index] = { ...newValues[index], value: newValue }
-                  setValues(newValues)
-                }}
-              />
-            </>
-          )
-        })}
-      </DialogContent>
+          <div style={{ marginBottom: 16, marginTop: 12 }}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DemoContainer components={["DatePicker"]}>
+                <DatePicker
+                  label="Дата измерения *"
+                  value={measurement.measured_at}
+                  onChange={(e) =>
+                    setMeasurement({
+                      ...measurement,
+                      measured_at: dayjs(e),
+                    })
+                  }
+                />
+              </DemoContainer>
+            </LocalizationProvider>
+          </div>
+          {values.map(({ value, entity, unit }, index) => {
+            return (
+              <>
+                <div
+                  style={{
+                    width: "100%",
+                    height: 1,
+                    backgroundColor: "#dddddd",
+                    marginTop: 16,
+                  }}
+                />
+                <Value
+                  {...{ value, entity, entities, unit }}
+                  onEntityChange={(newEntity) => {
+                    setValues((prev) => {
+                      prev[index].entity = newEntity
+                      return prev
+                    })
+                  }}
+                  onValueChange={(newValue) => {
+                    const newValues = JSON.parse(JSON.stringify(values))
+                    newValues[index] = { ...newValues[index], value: newValue }
+                    setValues(newValues)
+                  }}
+                />
+              </>
+            )
+          })}
+        </DialogContent>
 
-      <IconButton
-        onClick={() => {
-          setValues([...values, initValue])
-        }}
-      >
-        <Add />
-      </IconButton>
-
-      <DialogContent dividers>
-        <Button
-          fullWidth
-          size="large"
-          variant="contained"
-          onClick={save}
-          disabled={isSaving}
+        <IconButton
+          onClick={() => {
+            setValues([...values, initValue])
+          }}
         >
-          {isSaving ? "Сохраняю" : "Сохранить"}
-        </Button>
-      </DialogContent>
-    </Dialog>
+          <Add />
+        </IconButton>
+
+        <DialogContent dividers>
+          <Button
+            fullWidth
+            size="large"
+            variant="contained"
+            onClick={save}
+            disabled={isSaving}
+          >
+            {isSaving ? "Сохраняю" : "Сохранить"}
+          </Button>
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }
 

@@ -70,7 +70,7 @@ const Measurements = ({ measurements, setRefresh }: MeasurementsProps) => {
           },
           index
         ) => (
-          <li key={id} style={{ display: "block" }}>
+          <li key={id} style={{ display: "block", marginBottom: 20 }}>
             <div
               style={{
                 display: "flex",
@@ -101,7 +101,9 @@ const Measurements = ({ measurements, setRefresh }: MeasurementsProps) => {
                     <QueryStats />
                   </Avatar>
                 </Link>
-                <Typography>{entity_title}</Typography>
+                <Typography variant="body1" align="left">
+                  {entity_title}
+                </Typography>
               </div>
               <IconButton
                 onClick={() => deleteMeasurement(id)}
@@ -112,8 +114,8 @@ const Measurements = ({ measurements, setRefresh }: MeasurementsProps) => {
             </div>
             <div
               style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr 30px",
+                display: "flex",
+                justifyContent: "space-between",
                 alignItems: "center",
               }}
             >
@@ -131,10 +133,19 @@ const Measurements = ({ measurements, setRefresh }: MeasurementsProps) => {
                   <Download sx={{ color: pink[500] }} />
                 )}
               </div>
+            </div>
+
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
               <Typography
-                variant="body1"
+                variant="body2"
                 align="right"
-              >{`${max} - ${min}`}</Typography>
+              >{`Норма: ${max} - ${min} ${unit}`}</Typography>
               <IconButton
                 aria-label="comment"
                 onClick={() => {
@@ -158,7 +169,7 @@ const Measurements = ({ measurements, setRefresh }: MeasurementsProps) => {
                 <DialogContentText>{description}</DialogContentText>
               </DialogContent>
               <DialogContent dividers>
-                <DialogContentText>{`Рефересные значения: ${max} - ${min}${unit}`}</DialogContentText>
+                <DialogContentText>{`Рефересные значения: ${min} - ${max} ${unit}`}</DialogContentText>
               </DialogContent>
             </Dialog>
           </li>

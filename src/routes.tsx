@@ -30,7 +30,12 @@ const routes = createBrowserRouter([
     errorElement: <WelcomePage />,
   },
   {
-    path: "measurements",
+    path: "measurements/by_date",
+    element: <Measurements />,
+    errorElement: <WelcomePage />,
+  },
+  {
+    path: "measurements/by_entity",
     element: <Measurements />,
     errorElement: <WelcomePage />,
   },
