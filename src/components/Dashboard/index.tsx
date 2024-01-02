@@ -56,6 +56,10 @@ const Dashboard = () => {
         fetchLastMeasurements(id)
         fetchWarningMeasurements(id)
       })
+    } catch (e) {
+      console.error(e)
+    } finally {
+      setIsFamilyLoading(false)
     }
   }
 
