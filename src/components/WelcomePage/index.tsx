@@ -53,7 +53,6 @@ const WelcomePage = () => {
         )}/api/v1/login?email=${email}&password=${password}`
       )
       const { token, user } = res.data
-
       if (token) {
         setContext({ ...context, token, profile: user })
         setIsRedirect(true)
