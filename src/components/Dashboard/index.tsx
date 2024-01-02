@@ -52,10 +52,10 @@ const Dashboard = () => {
   const fetchFamily = async () => {
     setIsFamilyLoading(true)
     try {
-      const familyData: AxiosResponse<FamilyResponse> = await axios(
+      const response: AxiosResponse<FamilyResponse> = await axios(
         context.token
-      ).post(`${String(process.env.REACT_APP_DOMAIN)}/api/v1/family`)
-      const users = familyData.data.users
+      ).post(`${String(process.env.REACT_APP_DOMAIN)}/api/v1/users/list`)
+      const users = response.data.users
       setFamily(users)
       saveParent(users)
 

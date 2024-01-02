@@ -22,18 +22,13 @@ export interface IMeasurement {
   group_precedence: number
 }
 
-export interface Entity {
-  id: number
-  code: string
-  title: string
-}
-
 export interface IUser {
   id: number
   first_name: string
   member: string
   parent_id: null | number
   gender: string
+  isAdmin: boolean
 }
 
 export enum WarningEnum {
