@@ -32,7 +32,6 @@ type WarningMeasurementsType = { [id: number]: Warning[] }
 
 const Dashboard = () => {
   const [context, setContext] = useContext(MeasurementContext)
-  console.log("1 context: ", context)
 
   const [lastMeasurements, setLastMeasurements] =
     useState<LastMeasurementsType | null>(null)
@@ -103,7 +102,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     fetchFamily()
-  }, [context.refresh])
+  }, [context.alert_message])
 
   return (
     <div>
