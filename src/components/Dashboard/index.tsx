@@ -38,11 +38,11 @@ const Dashboard = () => {
   const [warningMeasurements, setWarningMeasurements] =
     useState<WarningMeasurementsType | null>(null)
   const [isMeasuresLoading, setIsMeasuresLoading] = useState<boolean>(false)
-  const [family, setFamily] = useState<IUser[]>([])
+  const [users, setUsers] = useState<IUser[]>([])
   const [isFamilyLoading, setIsFamilyLoading] = useState<boolean>(false)
   const [isOpenAllMeasurements, setIsOpen] = useState<boolean>(false)
 
-  const saveParent = (users: IUser[]) => {
+  const saveParentFrom = (users: IUser[]) => {
     const parent = users.find((user) => user.parent_id != null)
     if (parent) {
       setContext({ ...context, parent_id: parent.id })
@@ -56,8 +56,8 @@ const Dashboard = () => {
         context.token
       ).post(`${String(process.env.REACT_APP_DOMAIN)}/api/v1/users/list`)
       const users = response.data.users
-      setFamily(users)
-      saveParent(users)
+      setUsers(users)
+      saveParentFrom(users)
 
       setContext({ ...context, users })
       users.forEach(({ id }) => {
@@ -127,7 +127,7 @@ const Dashboard = () => {
       )}
       {!context.token && <Navigate to="/" replace />}
       {isFamilyLoading && "Request is ongoing..."}
-      {family.map(({ id, first_name, member }) => {
+      {users.map(({ id, first_name, member }) => {
         return (
           <Accordion
             key={id}
