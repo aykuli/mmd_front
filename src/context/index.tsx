@@ -7,11 +7,12 @@ export interface IMeasurementContext {
   measured_at: Date | null
   user_id: number | null
   token: string | null
-  parent_id: number | null
+  profile: IUser | null
   users: IUser[] | null
   alert_message: string
   alert_type: string
   expandedUserId: number | null
+  refresh: boolean
 }
 const contextInitValue: IMeasurementContext = {
   entity_code: null,
@@ -20,11 +21,12 @@ const contextInitValue: IMeasurementContext = {
   measured_at: null,
   user_id: null,
   token: null,
-  parent_id: null,
+  profile: null,
   users: null,
   alert_message: "",
   alert_type: "",
   expandedUserId: null,
+  refresh: false,
 }
 const setContext: any = (context: IMeasurementContext) => {
   return context

@@ -48,6 +48,7 @@ const Measurements = () => {
     <>
       {!context.token && <Navigate to="/" replace />}
       {isMeasuresLoading && <p>Загружаются данные...</p>}
+      {Object.keys(measurements).length === 0 ? "Нет никаких данных" : null}
 
       {Object.keys(measurements).map((key) => {
         return (
