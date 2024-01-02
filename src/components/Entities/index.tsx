@@ -53,6 +53,10 @@ const Entities = () => {
   return (
     <div>
       {isLoading && "Запрос в процессе..."}
+      {Object.keys(measurements || {}).length === 0
+        ? "Нет никаких данных"
+        : null}
+
       {groups.map(({ code, title }, index) => {
         return (
           <Group
