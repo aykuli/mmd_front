@@ -110,7 +110,7 @@ const Measurements = ({
                   {entity_title}
                 </Typography>
               </div>
-              {!justTitles && (
+              {!justTitles && context.profile?.isAdmin && (
                 <IconButton
                   onClick={() => deleteMeasurement(id)}
                   disabled={isDeleting}

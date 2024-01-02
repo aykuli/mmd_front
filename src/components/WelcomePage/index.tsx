@@ -17,6 +17,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material"
 
 import axios from "../../services/api"
 import MeasurementContext from "../../context"
+import { IUser } from "../../types"
 
 const style = {
   position: "absolute" as "absolute",
@@ -44,15 +45,16 @@ const WelcomePage = () => {
     setIsSent(true)
 
     try {
-      const res: AxiosResponse<{ token: string; user_id: number }> =
-        await axios(context.token).get(
-          `${String(
-            process.env.REACT_APP_DOMAIN
-          )}/api/v1/login?email=${email}&password=${password}`
-        )
-      const { token, user_id } = res.data
+      const res: AxiosResponse<{ token: string; user: IUser }> = await axios(
+        context.token
+      ).get(
+        `${String(
+          process.env.REACT_APP_DOMAIN
+        )}/api/v1/login?email=${email}&password=${password}`
+      )
+      const { token, user } = res.data
       if (token) {
-        setContext({ token, parent_id: user_id })
+        setContext({ ...context, token, profile: user })
         setIsRedirect(true)
       }
     } catch (e) {
@@ -60,12 +62,6 @@ const WelcomePage = () => {
     } finally {
       setIsSent(false)
     }
-  }
-
-  const handleMouseDownPassword = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    event.preventDefault()
   }
 
   return (
@@ -138,7 +134,6 @@ const WelcomePage = () => {
                         pwdInputType === "password" ? "text" : "password"
                       )
                     }}
-                    onMouseDown={handleMouseDownPassword}
                     edge="end"
                   >
                     {pwdInputType === "password" ? (

@@ -26,7 +26,6 @@ export interface IUser {
   id: number
   first_name: string
   member: string
-  parent_id: null | number
   gender: string
   isAdmin: boolean
 }

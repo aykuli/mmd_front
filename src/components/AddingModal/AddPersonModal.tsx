@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react"
+import { useContext, useState } from "react"
 import dayjs from "dayjs"
 import {
   Alert,
@@ -36,7 +36,6 @@ interface IPerson {
   first_name: string
   last_name: string
   gender: string
-  parent_id: number
   member: string
   birth_date: string | number | Date | dayjs.Dayjs | null | undefined
 }
@@ -47,7 +46,6 @@ const initPerson: IPerson = {
   first_name: "",
   last_name: "",
   gender: "",
-  parent_id: 0,
   member: "",
   birth_date: "",
 }
@@ -58,7 +56,6 @@ const prepare = (personData: IPerson) => {
     first_name: personData.first_name,
     last_name: personData.last_name,
     gender: personData.gender,
-    parent_id: personData.parent_id,
     member: personData.member,
     birth_date: dayjs(personData.birth_date).format("YYYY-MM-DD"),
   }
@@ -71,11 +68,6 @@ const AddPersonModal = ({ open, setOpen }: AddPersonProps) => {
 
   const [isSaving, setIsSaving] = useState<boolean>(false)
   const [error, setError] = useState<string>("")
-
-  useEffect(
-    () => setPersonData({ ...personData, parent_id: context.parent_id }),
-    [context.parent_id]
-  )
 
   const savePerson = async () => {
     try {
@@ -100,7 +92,14 @@ const AddPersonModal = ({ open, setOpen }: AddPersonProps) => {
   }
 
   return (
-    <Dialog fullScreen onClose={() => setOpen(false)} open={open}>
+    <Dialog
+      fullScreen
+      onClose={() => {
+        setContext({ ...context, refresh: !context.refresh })
+        setOpen(false)
+      }}
+      open={open}
+    >
       <DialogTitle>
         <div
           style={{

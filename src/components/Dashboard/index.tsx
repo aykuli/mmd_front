@@ -32,6 +32,7 @@ type WarningMeasurementsType = { [id: number]: Warning[] }
 
 const Dashboard = () => {
   const [context, setContext] = useContext(MeasurementContext)
+  console.log("1 context: ", context)
 
   const [lastMeasurements, setLastMeasurements] =
     useState<LastMeasurementsType | null>(null)
@@ -42,13 +43,6 @@ const Dashboard = () => {
   const [isFamilyLoading, setIsFamilyLoading] = useState<boolean>(false)
   const [isOpenAllMeasurements, setIsOpen] = useState<boolean>(false)
 
-  const saveParentFrom = (users: IUser[]) => {
-    const parent = users.find((user) => user.parent_id != null)
-    if (parent) {
-      setContext({ ...context, parent_id: parent.id })
-    }
-  }
-
   const fetchFamily = async () => {
     setIsFamilyLoading(true)
     try {
@@ -57,7 +51,6 @@ const Dashboard = () => {
       ).post(`${String(process.env.REACT_APP_DOMAIN)}/api/v1/users/list`)
       const users = response.data.users
       setUsers(users)
-      saveParentFrom(users)
 
       setContext({ ...context, users })
       users.forEach(({ id }) => {
@@ -110,7 +103,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     fetchFamily()
-  }, [])
+  }, [context.refresh])
 
   return (
     <div>

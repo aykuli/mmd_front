@@ -25,7 +25,7 @@ const App = ({ children }: { children: ReactElement }) => {
             </Typography>
             {context.token ? (
               <>
-                <AddingAction />
+                {context.profile?.isAdmin && <AddingAction />}
                 <Logout />
               </>
             ) : (
