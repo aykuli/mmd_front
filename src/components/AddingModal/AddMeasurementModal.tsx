@@ -36,7 +36,7 @@ interface AddMeasurementProps {
 
 interface IAddingMeasurement {
   user_id: number
-  measured_at: string | number | Date | dayjs.Dayjs | null | undefined
+  measured_at: dayjs.Dayjs | null | undefined
 }
 
 interface IValue {

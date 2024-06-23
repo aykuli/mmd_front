@@ -11,3 +11,11 @@ Request Method:
 GET
 Status Code:
 404 Not Found
+
+## Dev notes
+
+Check updates
+
+```shell
+npm-check -u
+```

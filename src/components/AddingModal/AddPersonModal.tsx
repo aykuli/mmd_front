@@ -37,7 +37,7 @@ interface IPerson {
   last_name: string
   gender: string
   member: string
-  birth_date: string | number | Date | dayjs.Dayjs | null | undefined
+  birth_date: dayjs.Dayjs | null | undefined
 }
 
 const members = ["мама", "папа", "брат", "сестра", "дочь", "сын"]
@@ -47,7 +47,7 @@ const initPerson: IPerson = {
   last_name: "",
   gender: "",
   member: "",
-  birth_date: "",
+  birth_date: null,
 }
 
 const prepare = (personData: IPerson) => {

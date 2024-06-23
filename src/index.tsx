@@ -4,7 +4,6 @@ import { RouterProvider } from "react-router-dom"
 
 import App from "./components/App"
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration"
-import reportWebVitals from "./reportWebVitals"
 import "./assets/index.css"
 
 import router from "./routes"
@@ -22,8 +21,3 @@ root.render(
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://cra.link/PWA
 serviceWorkerRegistration.unregister()
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals()
